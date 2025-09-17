@@ -1,6 +1,6 @@
 const aineet = [
-    {tyyppi: "happo", aNimi: "Suolahappo", yNimi: "Kloorivetyhappo", kaava: "HCl", anioni: "Cl", H: 1, M: 36.46, tiheys: (1 + (0.5 * tAinePitoisuus / 100))},
-    {tyyppi: "happo", aNimi: "Fluorivetyhappo", yNimi: "Fluorivety", kaava: "HF", anioni: "F", H: 1, M: 20.01, tiheys: 1.23},
+    {tyyppi: "happo", aNimi: "Suolahappo", yNimi: "Kloorivetyhappo", kaava: "HCl", anioni: "Cl", H: 1, M: 36.46, tiheys: function(pitoisuus) {return 1 + (0.5 * pitoisuus / 100);}},
+    {tyyppi: "happo", aNimi: "Vetyfluoridi", yNimi: "Fluorivetyhappo", kaava: "HF", anioni: "F", H: 1, M: 20.01, tiheys: 0.922},
     {tyyppi: "happo", aNimi: "Typpihappo", yNimi: "Salpietarihappo", kaava: "HNO3", anioni: "NO3", H: 1, M: 63.01},
     {tyyppi: "happo", aNimi: "Rikkihappo", yNimi: "Vihtrilliöljy", kaava: "H2SO4", anioni: "SO4", H: 2, M: 98.08},
     {tyyppi: "happo", aNimi: "Kloorihappo", yNimi: "Kloorivety", kaava: "HClO3", anioni: "ClO3", H: 1, M: 84.46},
@@ -25,22 +25,21 @@ if (tAine === null) {
     throw new Error("Käyttäjä peruutti syötteen.");
 }
 var nimi = tAine.trim().toLowerCase();
-var tAineObj = aineet.find(function(item) {
+var tObj = aineet.find(function(item) {
     return [item.aNimi, item.yNimi, item.kaava].some(function(v) { return v && v.toLowerCase() === nimi; });
 });
-if (!tAineObj) {
+if (!tObj) {
     alert("Ainetta '" + tAine + "' ei löytynyt.");
     throw new Error("Ainetta ei löytynyt: " + tAine);
 }
-var tLuku = tAineObj.H || tAineObj.OH;
-var tMolaarisuus = ((1000 * tAineObj.tiheys) / tAineObj.M);
+var tLuku = tObj.H || tObj.OH;
 
-console.log("Aineen " + tAine + " kaava on: " + tAineObj.kaava);
-console.log("Aineen moolimassa on: " + tAineObj.M + " g/mol" + " ja sen " + (tAineObj.tyyppi === "happo" ? "anionin" : "kationin") + " varaus on: " + (tAineObj.tyyppi === "happo" ? "+" : "-") + tLuku);
+console.log("Aineen " + tAine + " kaava on: " + tObj.kaava);
+console.log("Aineen moolimassa on: " + tObj.M + " g/mol" + " ja sen " + (tObj.tyyppi === "happo" ? "anionin" : "kationin") + " varaus on: " + (tObj.tyyppi === "happo" ? "+" : "-") + tLuku);
 // Käyttäjän syöttämän torjuttavan aineen ominaisuudet
 
 
-var tAineMassa = null;
+var tMäärä = null;
 while (true) {
     var raw = window.prompt("Anna torjuttavan aineen määrä (esim. 1.5 L tai 2 kg). Kirjoita yksikkö L tai kg:");
     if (raw === null) {
@@ -52,30 +51,41 @@ while (true) {
     if (!isFinite(num) || num <= 0) { alert("Anna positiivinen numero."); continue; }
     var unit = (m[2] || "L").toLowerCase();
     unit = unit === "l" ? "L" : "kg";
-    tAineMassa = { arvo: num, yksikkö: unit };
+    tMäärä = { arvo: num, yksikkö: unit };
     break;
 }
 // Käyttäjän syöttämän neutraloitavan aineen massa tai tilavuus
 
 
-var tAinePitoisuus = window.prompt("Anna neutraloitavan aineen pitoisuus prosenteina (0-100)");
-    if (tAinePitoisuus === null) {
+var tPitoisuus = window.prompt("Anna neutraloitavan aineen pitoisuus prosenteina (0-100)");
+    if (tPitoisuus === null) {
         throw new Error("Käyttäjä peruutti syötteen.");
-    tAinePitoisuus = replace(',', '.');
-    tAinePitoisuus = parseFloat(tAinePitoisuus);
-    if (!isFinite(tAinePitoisuus) || tAinePitoisuus <= 0 || tAinePitoisuus > 100) 
-        alert("Anna pitoisuus massaprosentteina (0-100).");
-        throw new Error("Virheellinen pitoisuus: " + tAinePitoisuus);
     }
-console.log("Torjuttavan aineen " + (tAineMassa.yksikkö === "L" ? "tilavuus" : "massa") + " on: " + tAineMassa.arvo + " " + tAineMassa.yksikkö + " ja " + (tAinePitoisuus === 100 ? "aine on puhdasta" : "pitoisuus: " + tAinePitoisuus + " %"));
-console.log("Aineen tiheys on: " + tAineObj.tiheys + " g/ml" + " ja " + "sen molaarisuus on: " + (1000 * tAineObj.tiheys / tAineObj.M) + " mol/L");
-// Käyttäjän syöttämän neutraloitavan aineen pitoisuus
+tPitoisuus = tPitoisuus.replace(',', '.');
+tPitoisuus = parseFloat(tPitoisuus);
+    if (!isFinite(tPitoisuus) || tPitoisuus <= 0 || tPitoisuus > 100){ 
+        alert("Anna pitoisuus massaprosentteina (0-100).");
+        throw new Error("Virheellinen pitoisuus: " + tPitoisuus);
+    }
+
+function laskeTiheys(tObj, tPitoisuus) {
+    if (typeof tObj.tiheys === "function") return tObj.tiheys(tPitoisuus);
+    else return tObj.tiheys;
+    } 
+
+var tTiheys = laskeTiheys(tObj, tPitoisuus);
+var tMoolisuus = (((1000 * tTiheys) * (tPitoisuus / 100)) / tObj.M);
+console.log("Torjuttavan aineen " + (tMäärä.yksikkö === "L" ? "tilavuus" : "massa") + " on: " + tMäärä.arvo + " " + tMäärä.yksikkö + " ja " + (tPitoisuus === 100 ? "aine on puhdasta" : "pitoisuus: " + tPitoisuus + " %"));
+console.log("Aineen tiheys on: " + tTiheys + " g/ml" + " ja " + "sen moolisuus on: " + tMoolisuus + " mol/L");
+
+// Käyttäjän syöttämän neutraloitavan aineen pitoisuus ja tiheys
 
 
-var tAineTodellinenMassa = (tAinePitoisuus % tAineMassa.arvo);
-var tAineMäärä = (tAineMassa.yksikkö === "l" ? (tAineTodellinenMassa * tMolaarisuus) : (tAineTodellinenMassa * 1000 / tAineObj.M));
+var tTodellinenMäärä = (tPitoisuus * tMäärä.arvo / 100);
+var tAinemäärä = (tMäärä.yksikkö === "L" ? (tMäärä.arvo * tMoolisuus) : (tTodellinenMäärä * 1000 / tObj.M));
 
-console.log("Torjuttavaa ainetta on liuoksessa: " + tAineTodellinenMassa + " " + tAineMassa.yksikkö + " tai " + tAineMäärä + " mol");
+console.log("Torjuttavaa ainetta on: " + tAinemäärä + " mol");
+
 // Käyttäjän syöttämän neutraloitavan aineen todellinen määrä (kilogrammoina tai litroina) ja ainemäärä moolina
 
 
@@ -105,9 +115,9 @@ console.log("Aineen tiheys on: " + nAineObj.tiheys + " g/ml" + " ja " + "sen mol
 // Käyttäjän syöttämä neutraloivan aineen ominaisuudet
 
 
-if (tAineObj.tyyppi == nAineObj.tyyppi) {
+if (tObj.tyyppi == nAineObj.tyyppi) {
     alert("Torjuttava aine ja neutraloiva aine eivät voi olla samaa tyyppiä (kumpikin happo tai kumpikin emäs).");
-    throw new Error("Sama tyyppi: " + tAineObj.tyyppi);
+    throw new Error("Sama tyyppi: " + tObj.tyyppi);
 }
 // Tarkistaa onko torjuttava aine ja neutraloiva aine eri tyyppiä
 
@@ -127,7 +137,7 @@ console.log(nAinePitoisuus === 100 ? "Neutraloitava aine on puddasta" : "Neutral
 
 
 var neutralointiKerroin = (tLuku / nLuku);
-var nAineMäärä = (neutralointiKerroin * tAineMäärä);
+var nAineMäärä = (neutralointiKerroin * tAinemäärä);
 var nAineTodellinenMäärä = (nAineMäärä * nAineObj.M / 1000);
 var nAineMassa = (nAineTodellinenMäärä / (nAinePitoisuus / 100));
 // Laskettu neutraloivan aineen massa tai tilavuus
