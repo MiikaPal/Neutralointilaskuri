@@ -1,5 +1,5 @@
 const aineet = [
-    {tyyppi: "happo", aNimi: "Suolahappo", yNimi: "Kloorivetyhappo", kaava: "HCl", anioni: "Cl", H: 1, M: 36.46, tiheys: 1.164}, // Oikea tapa laskea!
+    {tyyppi: "happo", aNimi: "Suolahappo", yNimi: "Kloorivetyhappo", kaava: "HCl", anioni: "Cl", H: 1, M: 36.46, tiheys: (1 + (0.5 * tAinePitoisuus / 100))},
     {tyyppi: "happo", aNimi: "Fluorivetyhappo", yNimi: "Fluorivety", kaava: "HF", anioni: "F", H: 1, M: 20.01, tiheys: 1.23},
     {tyyppi: "happo", aNimi: "Typpihappo", yNimi: "Salpietarihappo", kaava: "HNO3", anioni: "NO3", H: 1, M: 63.01},
     {tyyppi: "happo", aNimi: "Rikkihappo", yNimi: "Vihtrilliöljy", kaava: "H2SO4", anioni: "SO4", H: 2, M: 98.08},
@@ -37,7 +37,6 @@ var tMolaarisuus = ((1000 * tAineObj.tiheys) / tAineObj.M);
 
 console.log("Aineen " + tAine + " kaava on: " + tAineObj.kaava);
 console.log("Aineen moolimassa on: " + tAineObj.M + " g/mol" + " ja sen " + (tAineObj.tyyppi === "happo" ? "anionin" : "kationin") + " varaus on: " + (tAineObj.tyyppi === "happo" ? "+" : "-") + tLuku);
-console.log("Aineen tiheys on: " + tAineObj.tiheys + " g/ml" + " ja " + "sen molaarisuus on: " + (1000 * tAineObj.tiheys / tAineObj.M) + " mol/L");
 // Käyttäjän syöttämän torjuttavan aineen ominaisuudet
 
 
@@ -69,6 +68,7 @@ var tAinePitoisuus = window.prompt("Anna neutraloitavan aineen pitoisuus prosent
         throw new Error("Virheellinen pitoisuus: " + tAinePitoisuus);
     }
 console.log("Torjuttavan aineen " + (tAineMassa.yksikkö === "L" ? "tilavuus" : "massa") + " on: " + tAineMassa.arvo + " " + tAineMassa.yksikkö + " ja " + (tAinePitoisuus === 100 ? "aine on puhdasta" : "pitoisuus: " + tAinePitoisuus + " %"));
+console.log("Aineen tiheys on: " + tAineObj.tiheys + " g/ml" + " ja " + "sen molaarisuus on: " + (1000 * tAineObj.tiheys / tAineObj.M) + " mol/L");
 // Käyttäjän syöttämän neutraloitavan aineen pitoisuus
 
 
