@@ -1,5 +1,5 @@
 const aineet = [
-    {tyyppi: "happo", aNimi: "Suolahappo", yNimi: "Kloorivetyhappo", kaava: "HCl", anioni: "Cl", H: 1, M: 36.46, tiheys: 1.164}, // Oikea tapa laskea?
+    {tyyppi: "happo", aNimi: "Suolahappo", yNimi: "Kloorivetyhappo", kaava: "HCl", anioni: "Cl", H: 1, M: 36.46, tiheys: 1.164}, // Oikea tapa laskea!
     {tyyppi: "happo", aNimi: "Fluorivetyhappo", yNimi: "Fluorivety", kaava: "HF", anioni: "F", H: 1, M: 20.01, tiheys: 1.23},
     {tyyppi: "happo", aNimi: "Typpihappo", yNimi: "Salpietarihappo", kaava: "HNO3", anioni: "NO3", H: 1, M: 63.01},
     {tyyppi: "happo", aNimi: "Rikkihappo", yNimi: "Vihtrilliöljy", kaava: "H2SO4", anioni: "SO4", H: 2, M: 98.08},
