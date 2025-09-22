@@ -18,7 +18,7 @@ const aineet = [
         nimi: ["Vetyfluoridi", "Fluorivetyhappo"],
         YK: "1790",
         kaava: "HF",
-        anioni: "F", 
+        anioni: "F",
         H: 1, M: 20.01, 
         tiheys: function(pitoisuus) {
             return 0.98972 + 0.0063245 * pitoisuus
@@ -32,7 +32,7 @@ const aineet = [
         nimi: ["Typpihappo", "Salpietarihappo"],
         YK: ["2031", "2032"],
         kaava: "HNO3", 
-        anioni: "NO3", 
+        anioni: "NO3",
         H: 1, M: 63.01,
         tiheys: 1.5129
     },
