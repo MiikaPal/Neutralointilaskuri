@@ -204,61 +204,65 @@ console.log(
 );
 // Tulostaa käyttäjän syöttämän torjuttavan aineen pitoisuuden ja pitoisuuden yksikön
 
-if (tPitoisuus.arvo === 100 && tPitoisuus.yksikkö === "m") {
-    var tAinemäärä = (tMäärä.arvo * 1000) / tObj.M;
-    console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
-} else if (tPitoisuus.arvo === 100 && tPitoisuus.yksikkö === "v") {
-    var tTiheys = laskePuhdasTiheys(tObj);
-    console.log("Torjuttavan aineen tiheys on " + tTiheys.toFixed(2) + " kg/L.");
-    var tMassa = tMäärä.arvo * tTiheys;
-    console.log("Torjuttavan aineen massa on " + tMassa.toFixed(2) + " kg.");
-    var tAinemäärä = (tMassa * 1000) / tObj.M;
-    console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
-} else if (tMäärä.yksikkö === "L" && tPitoisuus.yksikkö === "v") {
-    var tTodellinenMäärä = tMäärä.arvo * (tPitoisuus.arvo / 100);
-    console.log("Torjuttavan aineen todellinen määrä on " + tTodellinenMäärä.toFixed(2) + " L.");
-    var tTiheys = laskePuhdasTiheys(tObj);
-    console.log("Torjuttavan aineen tiheys on " + tTiheys.toFixed(2) + " kg/L.");
-    var tMassa = tTodellinenMäärä * tTiheys;
-    console.log("Torjuttavan aineen massa on " + tMassa.toFixed(2) + " kg.");
-    var tAinemäärä = (tMassa * 1000) / tObj.M;
-    console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
-}
-else if (tMäärä.yksikkö === "L" && tPitoisuus.yksikkö === "m") {
-    var tTodellinenMäärä = tMäärä.arvo * (tPitoisuus.arvo / 100);
-    console.log("Torjuttavan aineen todellinen määrä on " + tTodellinenMäärä.toFixed(2) + " kg.");
-    var tTiheys = laskeTiheys(tObj, tPitoisuus);
-    console.log("Torjuttavan aineen tiheys on " + tTiheys.toFixed(2) + " kg/L.");
-    var tMassa = tTodellinenMäärä * tTiheys;
-    console.log("Torjuttavan aineen massa on " + tMassa.toFixed(2) + " kg.");
-    var tAinemäärä = (tMassa * 1000) / tObj.M;
-    console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
-}
-else if (tMäärä.yksikkö === "kg" && tPitoisuus.yksikkö === "m") {
-    var tTodellinenMäärä = tMäärä.arvo * (tPitoisuus.arvo / 100);
-    console.log("Torjuttavan aineen todellinen määrä on " + tTodellinenMäärä.toFixed(2) + " kg.");
-    var tAinemäärä = (tTodellinenMäärä * 1000) / tObj.M;
-    console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
-}
-else if (tMäärä.yksikkö === "kg" && tPitoisuus.yksikkö === "v") {
-    var tKokonaisTiheys = window.prompt("Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna torjuttavan aineen tiheys (kg/L):");
-        if (tKokonaisTiheys === null) {
-            throw new Error("Käyttäjä peruutti syötteen.")}
-        tKokonaisTiheys = tKokonaisTiheys.replace(',', '.');
-        tKokonaisTiheys = parseFloat(tKokonaisTiheys);
-        if (!isFinite(tKokonaisTiheys) || tKokonaisTiheys <= 0) throw new Error("Anna positiivinen numero.");
-    var tTodellinenMäärä = (tMäärä.arvo / tKokonaisTiheys) * (tPitoisuus.arvo / 100);
-    console.log("Torjuttavan aineen todellinen määrä on " + tTodellinenMäärä.toFixed(2) + " L.");
-    var tTiheys = laskePuhdasTiheys(tObj);
-    console.log("Torjuttavan aineen tiheys on " + tTiheys.toFixed(2) + " kg/L.");
-    var tMassa = tTodellinenMäärä * tTiheys;
-    console.log("Torjuttavan aineen massa on " + tMassa.toFixed(2) + " kg.");
-    var tAinemäärä = (tMassa * 1000) / tObj.M;
-    console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
-}
-else {
+if (tPitoisuus.arvo=== 100){
+    if (tPitoisuus.yksikkö === "m") {
+        var tAinemäärä = (tMäärä.arvo * 1000) / tObj.M;
+        console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
+    } else {
+        var tTiheys = laskePuhdasTiheys(tObj);
+        console.log("Torjuttavan aineen tiheys on " + tTiheys.toFixed(2) + " kg/L.");
+        var tMassa = tMäärä.arvo * tTiheys;
+        console.log("Torjuttavan aineen massa on " + tMassa.toFixed(2) + " kg.");
+        var tAinemäärä = (tMassa * 1000) / tObj.M;
+        console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
+    }
+} else if (tPitoisuus.arvo < 100) {
+    if (tMäärä.yksikkö === "L") {
+        if (tPitoisuus.yksikkö === "v") {
+            var tTodellinenMäärä = tMäärä.arvo * (tPitoisuus.arvo / 100);
+            console.log("Torjuttavan aineen todellinen määrä on " + tTodellinenMäärä.toFixed(2) + " L.");
+            var tTiheys = laskePuhdasTiheys(tObj);
+            console.log("Torjuttavan aineen tiheys on " + tTiheys.toFixed(2) + " kg/L.");
+            var tMassa = tTodellinenMäärä * tTiheys;
+            console.log("Torjuttavan aineen massa on " + tMassa.toFixed(2) + " kg.");
+            var tAinemäärä = (tMassa * 1000) / tObj.M;
+            console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
+        } else {
+            var tTodellinenMäärä = tMäärä.arvo * (tPitoisuus.arvo / 100);
+            console.log("Torjuttavan aineen todellinen määrä on " + tTodellinenMäärä.toFixed(2) + " L.");
+            var tTiheys = laskeTiheys(tObj, tPitoisuus);
+            console.log("Torjuttavan aineen tiheys on " + tTiheys.toFixed(2) + " kg/L.");
+            var tMassa = tTodellinenMäärä * tTiheys;
+            console.log("Torjuttavan aineen massa on " + tMassa.toFixed(2) + " kg.");
+            var tAinemäärä = (tMassa * 1000) / tObj.M;
+            console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
+        }
+    } else {
+        if (tPitoisuus.yksikkö === "m") {
+            var tTodellinenMäärä = tMäärä.arvo * (tPitoisuus.arvo / 100);
+            console.log("Torjuttavan aineen todellinen määrä on " + tTodellinenMäärä.toFixed(2) + " kg.");
+            var tAinemäärä = (tTodellinenMäärä * 1000) / tObj.M;
+            console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
+        } else {
+            var tKokonaisTiheys = window.prompt("Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna torjuttavan aineen tiheys (kg/L):");
+                if (tKokonaisTiheys === null) {
+                    throw new Error("Käyttäjä peruutti syötteen.")}
+                tKokonaisTiheys = tKokonaisTiheys.replace(',', '.');
+                tKokonaisTiheys = parseFloat(tKokonaisTiheys);
+                if (!isFinite(tKokonaisTiheys) || tKokonaisTiheys <= 0) throw new Error("Anna positiivinen numero.");
+            var tTodellinenMäärä = (tMäärä.arvo / tKokonaisTiheys) * (tPitoisuus.arvo / 100);
+            console.log("Torjuttavan aineen todellinen määrä on " + tTodellinenMäärä.toFixed(2) + " L.");
+            var tTiheys = laskePuhdasTiheys(tObj);
+            console.log("Torjuttavan aineen tiheys on " + tTiheys.toFixed(2) + " kg/L.");
+            var tMassa = tTodellinenMäärä * tTiheys;
+            console.log("Torjuttavan aineen massa on " + tMassa.toFixed(2) + " kg.");
+            var tAinemäärä = (tMassa * 1000) / tObj.M;
+            console.log("Torjuttavaa ainetta on " + tAinemäärä.toFixed(2) + " moolia.");
+        }
+    }
+} else {
     throw new Error("Jokin meni pieleen. Tarkista kaikki syötteet.");
-}
+};
 // Torjuttavan aineen ainemäärä kaikilla eri syöteyhdistelmillä
 
 
@@ -345,34 +349,33 @@ if (nPitoisuus.arvo === 100) {
     var nKokonaisMassa = nMassa;
     var nKokonaisTilavuus = nMassa / laskePuhdasTiheys(nObj);
     console.log("Neutraloitavaa ainetta tarvitaan " + nKokonaisMassa.toFixed(2) + " kg, eli " + nKokonaisTilavuus.toFixed(2) + " L.");
-}
-else if (nPitoisuus.yksikkö === "v" && nPitoisuus.arvo < 100) {
-    var nTiheys = laskePuhdasTiheys(nObj);
-    console.log("Neutraloivan aineen tiheys on " + nTiheys.toFixed(2) + " kg/L.");
-    var nTilavuus = nMassa / nTiheys;
-    console.log("Neutraloivan aineen  tilavuus on " + nTilavuus.toFixed(2) + " L.");
-    var nKokonaisTilavuus = nTilavuus / (nPitoisuus.arvo / 100);
-    var nKokonaisTiheys = window.prompt("Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna neutraloivan aineen tiheys (kg/L):");
-        if (nKokonaisTiheys === null) {
-            throw new Error("Käyttäjä peruutti syötteen.")}
-        nKokonaisTiheys = nKokonaisTiheys.replace(',', '.');
-        nKokonaisTiheys = parseFloat(nKokonaisTiheys);
-        if (!isFinite(nKokonaisTiheys) || nKokonaisTiheys <= 0) throw new Error("Anna positiivinen numero.");
-    var nKokonaisMassa = nKokonaisTilavuus * nKokonaisTiheys;
-    console.log("Neutraloitavaa ainetta tarvitaan " + nKokonaisMassa.toFixed(2) + " kg, eli " + nKokonaisTilavuus.toFixed(2) + " L.");
-}
-else if (nPitoisuus.yksikkö === "m" && nPitoisuus.arvo < 100) {
-    var nKokonaisMassa = nMassa / (nPitoisuus.arvo / 100);
-    var nKokonaisTiheys = window.prompt("Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna neutraloivan aineen tiheys (kg/L):");
-        if (nKokonaisTiheys === null) {
-            throw new Error("Käyttäjä peruutti syötteen.")}
-        nKokonaisTiheys = nKokonaisTiheys.replace(',', '.');
-        nKokonaisTiheys = parseFloat(nKokonaisTiheys);
-        if (!isFinite(nKokonaisTiheys) || nKokonaisTiheys <= 0) throw new Error("Anna positiivinen numero.");
-    var nKokonaisTilavuus = nKokonaisMassa / nKokonaisTiheys;
-    console.log("Neutraloitavaa ainetta tarvitaan " + nKokonaisMassa.toFixed(2) + " kg, eli " + nKokonaisTilavuus.toFixed(2) + " L.");
-}
-else {
+} else if (nPitoisuus.arvo < 100) {
+    if (nPitoisuus.yksikkö === "v") {
+        var nTiheys = laskePuhdasTiheys(nObj);
+        console.log("Neutraloivan aineen tiheys on " + nTiheys.toFixed(2) + " kg/L.");
+        var nTilavuus = nMassa / nTiheys;
+        console.log("Neutraloivan aineen  tilavuus on " + nTilavuus.toFixed(2) + " L.");
+        var nKokonaisTilavuus = nTilavuus / (nPitoisuus.arvo / 100);
+        var nKokonaisTiheys = window.prompt("Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna neutraloivan aineen tiheys (kg/L):");
+            if (nKokonaisTiheys === null) {
+                throw new Error("Käyttäjä peruutti syötteen.")}
+            nKokonaisTiheys = nKokonaisTiheys.replace(',', '.');
+            nKokonaisTiheys = parseFloat(nKokonaisTiheys);
+            if (!isFinite(nKokonaisTiheys) || nKokonaisTiheys <= 0) throw new Error("Anna positiivinen numero.");
+        var nKokonaisMassa = nKokonaisTilavuus * nKokonaisTiheys;
+        console.log("Neutraloitavaa ainetta tarvitaan " + nKokonaisMassa.toFixed(2) + " kg, eli " + nKokonaisTilavuus.toFixed(2) + " L.");
+    } else {
+        var nKokonaisMassa = nMassa / (nPitoisuus.arvo / 100);
+        var nKokonaisTiheys = window.prompt("Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna neutraloivan aineen tiheys (kg/L):");
+            if (nKokonaisTiheys === null) {
+                throw new Error("Käyttäjä peruutti syötteen.")}
+            nKokonaisTiheys = nKokonaisTiheys.replace(',', '.');
+            nKokonaisTiheys = parseFloat(nKokonaisTiheys);
+            if (!isFinite(nKokonaisTiheys) || nKokonaisTiheys <= 0) throw new Error("Anna positiivinen numero.");
+        var nKokonaisTilavuus = nKokonaisMassa / nKokonaisTiheys;
+        console.log("Neutraloitavaa ainetta tarvitaan " + nKokonaisMassa.toFixed(2) + " kg, eli " + nKokonaisTilavuus.toFixed(2) + " L.");
+    }
+} else {
     throw new Error("Jokin meni pieleen. Tarkista kaikki syötteet.");
 }
 // Laskee ja tulostaa neutraloivan aineen massan ja tilavuuden kaikilla eri syöteyhdistelmillä
