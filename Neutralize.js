@@ -1,11 +1,9 @@
 const aineet = [
     {
         tyyppi: "happo",
-        olomuoto: "kaasu",
         nimi: ["Suolahappo", "Kloorivetyhappo"],
         YK: "1789",
         kaava: "HCl", 
-        anioni: "Cl",
         H: 1, M: 36.46,
         tiheys: function(pitoisuus) {
             return 0.99785 + 0.0050063 * pitoisuus
@@ -14,7 +12,6 @@ const aineet = [
     },
     {
         tyyppi: "happo",
-        olomuoto: "kaasu",
         nimi: ["Vetyfluoridi", "Fluorivetyhappo"],
         YK: "1790",
         kaava: "HF",
