@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="fi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Neutralointilaskuri</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+            .container {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            h2 {
+                color: #34495e;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 10px;
+            }
+            .buttons {
+                text-align: center;
+                margin: 20px 0;
+            }
+            button {
+                background-color: #3498db;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                margin: 0 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s;
+            }
+            button:hover {
+                background-color: #2980b9;
+            }
+            .results {
+                background-color: #ecf0f1;
+                padding: 20px;
+                border-radius: 5px;
+                margin: 20px 0;
+                border-left: 4px solid #3498db;
+            }
+            .results h3 {
+                margin-top: 0;
+                color: #2c3e50;
+            }
+            .results p {
+                margin: 10px 0;
+                line-height: 1.6;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+                background: white;
+            }
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: left;
+            }
+            th {
+                background-color: #3498db;
+                color: white;
+                font-weight: bold;
+            }
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            tr:hover {
+                background-color: #e8f4f8;
+            }
+            .acid {
+                border-left: 4px solid #e74c3c;
+            }
+            .base {
+                border-left: 4px solid #27ae60;
+            }
+            .toggle-table {
+                background-color: #95a5a6;
+            }
+            .toggle-table:hover {
+                background-color: #7f8c8d;
+            }
+            #substanceTable {
+                display: none;
+            }
+            .error {
+                background-color: #e74c3c;
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                margin: 10px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🧪 Neutralointilaskuri</h1>
+            <p style="text-align: center; color: #7f8c8d">
+                Laske kuinka paljon neutraloivaa ainetta tarvitset kemiallisen
+                aineen neutralointiin
+            </p>
+
+            <div class="buttons">
+                <button onclick="startCalculation()">Aloita Laskenta</button>
+                <button onclick="toggleTable()" class="toggle-table">
+                    Näytä/Piilota ainetaulukko
+                </button>
+            </div>
+
+            <div id="substanceTable">
+                <h2>📋 Saatavilla olevat aineet</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tyyppi</th>
+                            <th>Nimi</th>
+                            <th>Kaava</th>
+                            <th>YK-numero</th>
+                            <th>Moolimassa (g/mol)</th>
+                            <th>H+ / OH-</th>
+                        </tr>
+                    </thead>
+                    <tbody id="substanceTableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="results"></div>
+        </div>
+
+        <script>
+            const aineet = [
+                {
+                    tyyppi: "happo",
+                    nimi: ["Suolahappo", "Kloorivetyhappo"],
+                    YK: "1789",
+                    kaava: "HCl",
+                    H: 1,
+                    M: 36.46,
+                    tiheys: function (pitoisuus) {
+                        return (
+                            0.99785 +
+                            0.0050063 * pitoisuus +
+                            5.9451 * Math.pow(10, -7) * Math.pow(pitoisuus, 2)
+                        );
+                    },
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Vetyfluoridi", "Fluorivetyhappo"],
+                    YK: "1790",
+                    kaava: "HF",
+                    H: 1,
+                    M: 20.01,
+                    tiheys: function (pitoisuus) {
+                        return (
+                            0.98972 +
+                            0.0063245 * pitoisuus -
+                            1.8224 * Math.pow(10, -4) * Math.pow(pitoisuus, 2) +
+                            4.0372 * Math.pow(10, -6) * Math.pow(pitoisuus, 3) -
+                            2.8958 * Math.pow(10, -8) * Math.pow(pitoisuus, 4)
+                        );
+                    },
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Typpihappo", "Salpietarihappo"],
+                    YK: ["2031", "2032"],
+                    kaava: "HNO3",
+                    anioni: "NO3",
+                    H: 1,
+                    M: 63.01,
+                    tiheys: 1.5129,
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Rikkihappo", "Vihtrilliöljy"],
+                    YK: ["1830", "1832", "2796"],
+                    kaava: "H2SO4",
+                    anioni: "SO4",
+                    H: 2,
+                    M: 98.08,
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Etikkahappo", "Karbokysyylihappo"],
+                    YK: ["2789", "2790"],
+                    kaava: "CH3COOH",
+                    anioni: "CH3COO",
+                    H: 1,
+                    M: 60.05,
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Muurahaishappo", "Metaanihappo"],
+                    YK: ["1799", "3412"],
+                    kaava: "HCOOH",
+                    anioni: "HCOO",
+                    H: 1,
+                    M: 46.03,
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Vetyjodidi", "Vetyjodihappo"],
+                    YK: "2197",
+                    kaava: "HI",
+                    anioni: "I",
+                    H: 1,
+                    M: 127.91,
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Perkloorihappo"],
+                    YK: ["1802", "1873"],
+                    kaava: "HClO4",
+                    anioni: "ClO4",
+                    H: 1,
+                    M: 100.46,
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Dikloorietikkahappo"],
+                    YK: "1764",
+                    kaava: "CHCl2COOH",
+                    anioni: "CHCl2COO",
+                    H: 1,
+                    M: 128.94,
+                },
+                {
+                    tyyppi: "happo",
+                    nimi: ["Trivetyfosfaatti", "Fosforihappo"],
+                    YK: ["1805", "3453"],
+                    kaava: "H3PO4",
+                    anioni: "PO4",
+                    H: 3,
+                    M: 97.99,
+                },
+                {
+                    tyyppi: "emäs",
+                    olomuoto: "kiinteä",
+                    nimi: ["Natriumhydroksidi", "Lipeä", "Natriumlipeä"],
+                    YK: ["1823", "1824"],
+                    kaava: "NaOH",
+                    kationi: "Na",
+                    OH: 1,
+                    M: 39.998,
+                    tiheys: function (pitoisuus) {
+                        return 0.9982 + 0.011318 * pitoisuus;
+                    },
+                },
+                {
+                    tyyppi: "emäs",
+                    nimi: [
+                        "Kalsiumhydroksidi",
+                        "Kalsiumvesi",
+                        "Kalkkimaito",
+                        "Kalsiumdihydroksidi",
+                    ],
+                    kaava: "Ca(OH)2",
+                    kationi: "Ca",
+                    OH: 2,
+                    M: 74.09,
+                },
+                {
+                    tyyppi: "emäs",
+                    nimi: ["Kaliumhydroksidi", "Kaliumlipeä"],
+                    YK: ["1813", "1814"],
+                    kaava: "KOH",
+                    kationi: "K",
+                    OH: 1,
+                    M: 56.11,
+                },
+                {
+                    tyyppi: "emäs",
+                    nimi: "Kalsiumkarbonaatti",
+                    kaava: "CaCO3",
+                    kationi: "Ca",
+                    OH: 2,
+                    M: 100.09,
+                    tiheys: 2.71,
+                },
+            ];
+
+            function displayResult(message) {
+                const resultsDiv = document.getElementById("results");
+                if (!resultsDiv.querySelector(".results")) {
+                    resultsDiv.innerHTML =
+                        '<div class="results"><h3>📊 Laskennan tulos</h3></div>';
+                }
+                const resultsContent = resultsDiv.querySelector(".results");
+                resultsContent.innerHTML += `<p>${message}</p>`;
+            }
+
+            function clearResults() {
+                document.getElementById("results").innerHTML = "";
+            }
+
+            function showError(message) {
+                const resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML = `<div class="error">❌ Virhe: ${message}</div>`;
+            }
+
+            function toggleTable() {
+                const table = document.getElementById("substanceTable");
+                if (
+                    table.style.display === "none" ||
+                    table.style.display === ""
+                ) {
+                    table.style.display = "block";
+                    populateTable();
+                } else {
+                    table.style.display = "none";
+                }
+            }
+
+            function populateTable() {
+                const tbody = document.getElementById("substanceTableBody");
+                tbody.innerHTML = "";
+
+                aineet.forEach((aine) => {
+                    const row = tbody.insertRow();
+                    row.className = aine.tyyppi === "happo" ? "acid" : "base";
+
+                    const typeCell = row.insertCell(0);
+                    typeCell.textContent =
+                        aine.tyyppi === "happo" ? "🔴 Happo" : "🟢 Emäs";
+
+                    const nameCell = row.insertCell(1);
+                    nameCell.textContent = Array.isArray(aine.nimi)
+                        ? aine.nimi.join(", ")
+                        : aine.nimi;
+
+                    const formulaCell = row.insertCell(2);
+                    formulaCell.textContent = aine.kaava;
+
+                    const ukCell = row.insertCell(3);
+                    ukCell.textContent = aine.YK
+                        ? Array.isArray(aine.YK)
+                            ? aine.YK.join(", ")
+                            : aine.YK
+                        : "-";
+
+                    const massCell = row.insertCell(4);
+                    massCell.textContent = aine.M;
+
+                    const ionCell = row.insertCell(5);
+                    ionCell.textContent = aine.H || aine.OH;
+                });
+            }
+
+            function laskeTiheys(obj, pitoisuus) {
+                if (typeof obj.tiheys === "function")
+                    return obj.tiheys(pitoisuus.arvo);
+                return obj.tiheys;
+            }
+
+            function laskePuhdasTiheys(obj) {
+                if (typeof obj.tiheys === "function") return obj.tiheys(100);
+                return obj.tiheys;
+            }
+
+            function startCalculation() {
+                clearResults();
+
+                try {
+                    // Torjuttava aine
+                    var tAine = prompt(
+                        "Anna torjuttavan aineen nimi, kaava tai YK-numero:",
+                    );
+                    if (tAine === null) {
+                        throw new Error("Käyttäjä peruutti syötteen.");
+                    }
+                    var tNimi = String(tAine).trim().toLowerCase();
+                    var tObj = aineet.find(function (item) {
+                        var candidates = [
+                            item.nimi,
+                            item.kaava,
+                            item.YK,
+                        ].filter((x) => x != null);
+                        return candidates.some(function (v) {
+                            if (Array.isArray(v)) {
+                                return v.some(
+                                    (el) =>
+                                        String(el).trim().toLowerCase() ===
+                                        tNimi,
+                                );
+                            }
+                            return String(v).trim().toLowerCase() === tNimi;
+                        });
+                    });
+                    if (!tObj) {
+                        throw new Error("Ainetta '" + tAine + "' ei löytynyt.");
+                    }
+                    var tLuku = tObj.H || tObj.OH;
+
+                    displayResult(
+                        "🧪 <strong>Torjuttava aine:</strong> " +
+                            (typeof tObj.nimi === "string"
+                                ? tObj.nimi
+                                : tObj.nimi.join(", ")) +
+                            " (" +
+                            tObj.kaava +
+                            ")" +
+                            (tObj.YK
+                                ? ", YK: " +
+                                  (typeof tObj.YK === "string"
+                                      ? tObj.YK
+                                      : tObj.YK.join(", "))
+                                : ""),
+                    );
+                    displayResult(
+                        "⚖️ <strong>Moolimassa:</strong> " +
+                            tObj.M +
+                            " g/mol, <strong>" +
+                            (tObj.tyyppi === "happo" ? "Anionin" : "Kationin") +
+                            " varaus:</strong> " +
+                            (tObj.tyyppi === "happo" ? "+" : "-") +
+                            tLuku,
+                    );
+
+                    // Torjuttavan aineen määrä
+                    var tMäärä = null;
+                    while (true) {
+                        var raw = prompt(
+                            "Anna torjuttavan aineen määrä (esim. 1.5 L tai 2 kg). Kirjoita yksikkö L tai kg:",
+                        );
+                        if (raw === null) {
+                            throw new Error("Käyttäjä peruutti syötteen");
+                        }
+                        raw = raw.trim();
+                        var m = raw.match(/^([\d.,]+)\s*(L|l|KG|kg|Kg|kG)?$/);
+                        if (!m) {
+                            alert(
+                                "Virheellinen syöte. Käytä muotoa '1.5 L' tai '2 kg'.",
+                            );
+                            continue;
+                        }
+                        var num = parseFloat(m[1].replace(",", "."));
+                        if (!isFinite(num) || num <= 0) {
+                            alert("Anna positiivinen numero.");
+                            continue;
+                        }
+                        var unit = (m[2] || "L").toLowerCase();
+                        if (unit !== "l" && unit !== "kg") {
+                            alert("Yksikkö voi olla vain 'L' tai 'kg'.");
+                            continue;
+                        }
+                        unit = unit === "l" ? "L" : "kg";
+                        tMäärä = { arvo: num, yksikkö: unit };
+                        break;
+                    }
+
+                    displayResult(
+                        "📏 <strong>Torjuttavan aineen määrä:</strong> " +
+                            tMäärä.arvo +
+                            " " +
+                            tMäärä.yksikkö,
+                    );
+
+                    // Torjuttavan aineen pitoisuus
+                    var tPitoisuus = null;
+                    while (true) {
+                        var raw = prompt(
+                            "Anna torjuttavan aineen pitoisuus prosenteina (0-100) ja lisää perään 'm' jos aine on massaprosenttinen (esim. 32 m) tai 'v' jos tilavuusprosenttinen (esim. 70 v). Oletuksena on massaprosentti.",
+                        );
+                        if (raw === null) {
+                            throw new Error("Käyttäjä peruutti syötteen");
+                        }
+                        raw = raw.trim();
+                        var m = raw.match(/^([\d.,]+)\s*(m|M|v|V)?$/);
+                        if (!m) {
+                            alert(
+                                "Virheellinen syöte. Käytä muotoa '32 m' tai '70 v'.",
+                            );
+                            continue;
+                        }
+                        var num = parseFloat(m[1].replace(",", "."));
+                        if (!isFinite(num) || num <= 0 || num > 100) {
+                            alert("Anna pitoisuus prosentteina (0-100).");
+                            continue;
+                        }
+                        var unit = (m[2] || "m").toLowerCase();
+                        if (unit !== "m" && unit !== "v") {
+                            alert("Yksikkö voi olla vain 'm' tai 'v'.");
+                            continue;
+                        }
+                        unit = unit === "m" ? "m" : "v";
+                        tPitoisuus = { arvo: num, yksikkö: unit };
+                        break;
+                    }
+
+                    displayResult(
+                        "🔬 <strong>Torjuttavan aineen pitoisuus:</strong> " +
+                            (tPitoisuus.arvo === 100
+                                ? "100% (puhdas aine)"
+                                : tPitoisuus.arvo +
+                                  (tPitoisuus.yksikkö === "m"
+                                      ? " massa%"
+                                      : " vol%")),
+                    );
+
+                    // Laske torjuttavan aineen ainemäärä
+                    var tAinemäärä;
+                    if (tPitoisuus.arvo === 100) {
+                        if (tPitoisuus.yksikkö === "m") {
+                            tAinemäärä = (tMäärä.arvo * 1000) / tObj.M;
+                            displayResult(
+                                "🧮 <strong>Torjuttavan aineen ainemäärä:</strong> " +
+                                    tAinemäärä.toFixed(2) +
+                                    " moolia",
+                            );
+                        } else {
+                            var tTiheys = laskePuhdasTiheys(tObj);
+                            displayResult(
+                                "📊 <strong>Torjuttavan aineen tiheys:</strong> " +
+                                    tTiheys.toFixed(2) +
+                                    " kg/L",
+                            );
+                            var tMassa = tMäärä.arvo * tTiheys;
+                            displayResult(
+                                "⚖️ <strong>Torjuttavan aineen massa:</strong> " +
+                                    tMassa.toFixed(2) +
+                                    " kg",
+                            );
+                            tAinemäärä = (tMassa * 1000) / tObj.M;
+                            displayResult(
+                                "🧮 <strong>Torjuttavan aineen ainemäärä:</strong> " +
+                                    tAinemäärä.toFixed(2) +
+                                    " moolia",
+                            );
+                        }
+                    } else if (tPitoisuus.arvo < 100) {
+                        if (tMäärä.yksikkö === "L") {
+                            if (tPitoisuus.yksikkö === "v") {
+                                var tTodellinenMäärä =
+                                    tMäärä.arvo * (tPitoisuus.arvo / 100);
+                                displayResult(
+                                    "📐 <strong>Torjuttavan aineen todellinen määrä:</strong> " +
+                                        tTodellinenMäärä.toFixed(2) +
+                                        " L",
+                                );
+                                var tTiheys = laskePuhdasTiheys(tObj);
+                                displayResult(
+                                    "📊 <strong>Torjuttavan aineen tiheys:</strong> " +
+                                        tTiheys.toFixed(2) +
+                                        " kg/L",
+                                );
+                                var tMassa = tTodellinenMäärä * tTiheys;
+                                displayResult(
+                                    "⚖️ <strong>Torjuttavan aineen massa:</strong> " +
+                                        tMassa.toFixed(2) +
+                                        " kg",
+                                );
+                                tAinemäärä = (tMassa * 1000) / tObj.M;
+                                displayResult(
+                                    "🧮 <strong>Torjuttavan aineen ainemäärä:</strong> " +
+                                        tAinemäärä.toFixed(2) +
+                                        " moolia",
+                                );
+                            } else {
+                                var tTodellinenMäärä =
+                                    tMäärä.arvo * (tPitoisuus.arvo / 100);
+                                displayResult(
+                                    "📐 <strong>Torjuttavan aineen todellinen määrä:</strong> " +
+                                        tTodellinenMäärä.toFixed(2) +
+                                        " L",
+                                );
+                                var tTiheys = laskeTiheys(tObj, tPitoisuus);
+                                displayResult(
+                                    "📊 <strong>Torjuttavan aineen tiheys:</strong> " +
+                                        tTiheys.toFixed(2) +
+                                        " kg/L",
+                                );
+                                var tMassa = tTodellinenMäärä * tTiheys;
+                                displayResult(
+                                    "⚖️ <strong>Torjuttavan aineen massa:</strong> " +
+                                        tMassa.toFixed(2) +
+                                        " kg",
+                                );
+                                tAinemäärä = (tMassa * 1000) / tObj.M;
+                                displayResult(
+                                    "🧮 <strong>Torjuttavan aineen ainemäärä:</strong> " +
+                                        tAinemäärä.toFixed(2) +
+                                        " moolia",
+                                );
+                            }
+                        } else {
+                            if (tPitoisuus.yksikkö === "m") {
+                                var tTodellinenMäärä =
+                                    tMäärä.arvo * (tPitoisuus.arvo / 100);
+                                displayResult(
+                                    "📐 <strong>Torjuttavan aineen todellinen määrä:</strong> " +
+                                        tTodellinenMäärä.toFixed(2) +
+                                        " kg",
+                                );
+                                tAinemäärä = (tTodellinenMäärä * 1000) / tObj.M;
+                                displayResult(
+                                    "🧮 <strong>Torjuttavan aineen ainemäärä:</strong> " +
+                                        tAinemäärä.toFixed(2) +
+                                        " moolia",
+                                );
+                            } else {
+                                var tKokonaisTiheys = prompt(
+                                    "Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna torjuttavan aineen tiheys (kg/L):",
+                                );
+                                if (tKokonaisTiheys === null) {
+                                    throw new Error(
+                                        "Käyttäjä peruutti syötteen.",
+                                    );
+                                }
+                                tKokonaisTiheys = tKokonaisTiheys.replace(
+                                    ",",
+                                    ".",
+                                );
+                                tKokonaisTiheys = parseFloat(tKokonaisTiheys);
+                                if (
+                                    !isFinite(tKokonaisTiheys) ||
+                                    tKokonaisTiheys <= 0
+                                )
+                                    throw new Error(
+                                        "Anna positiivinen numero.",
+                                    );
+                                var tTodellinenMäärä =
+                                    (tMäärä.arvo / tKokonaisTiheys) *
+                                    (tPitoisuus.arvo / 100);
+                                displayResult(
+                                    "📐 <strong>Torjuttavan aineen todellinen määrä:</strong> " +
+                                        tTodellinenMäärä.toFixed(2) +
+                                        " L",
+                                );
+                                var tTiheys = laskePuhdasTiheys(tObj);
+                                displayResult(
+                                    "📊 <strong>Torjuttavan aineen tiheys:</strong> " +
+                                        tTiheys.toFixed(2) +
+                                        " kg/L",
+                                );
+                                var tMassa = tTodellinenMäärä * tTiheys;
+                                displayResult(
+                                    "⚖️ <strong>Torjuttavan aineen massa:</strong> " +
+                                        tMassa.toFixed(2) +
+                                        " kg",
+                                );
+                                tAinemäärä = (tMassa * 1000) / tObj.M;
+                                displayResult(
+                                    "🧮 <strong>Torjuttavan aineen ainemäärä:</strong> " +
+                                        tAinemäärä.toFixed(2) +
+                                        " moolia",
+                                );
+                            }
+                        }
+                    }
+
+                    displayResult("<hr>");
+
+                    // Neutraloiva aine
+                    var nAine = prompt("Anna neutraloivan aineen nimi:");
+                    if (nAine === null) {
+                        throw new Error("Käyttäjä peruutti syötteen.");
+                    }
+                    var nNimi = String(nAine).trim().toLowerCase();
+                    var nObj = aineet.find(function (item) {
+                        var candidates = [
+                            item.nimi,
+                            item.kaava,
+                            item.YK,
+                        ].filter((x) => x != null);
+                        return candidates.some(function (v) {
+                            if (Array.isArray(v)) {
+                                return v.some(
+                                    (el) =>
+                                        String(el).trim().toLowerCase() ===
+                                        nNimi,
+                                );
+                            }
+                            return String(v).trim().toLowerCase() === nNimi;
+                        });
+                    });
+                    if (!nObj) {
+                        throw new Error("Ainetta '" + nAine + "' ei löytynyt.");
+                    }
+                    var nLuku = nObj.H || nObj.OH;
+
+                    if (tObj.tyyppi == nObj.tyyppi) {
+                        throw new Error(
+                            "Torjuttava aine ja neutraloiva aine eivät voi olla samaa tyyppiä (kumpikin happo tai kumpikin emäs).",
+                        );
+                    }
+
+                    var neutralointiKerroin = tLuku / nLuku;
+                    var nAinemäärä = tAinemäärä * neutralointiKerroin;
+
+                    displayResult(
+                        "🧪 <strong>Neutraloiva aine:</strong> " +
+                            nAine +
+                            " (" +
+                            nObj.kaava +
+                            ")" +
+                            (nObj.YK
+                                ? ", YK: " +
+                                  (typeof nObj.YK === "string"
+                                      ? nObj.YK
+                                      : nObj.YK.join(", "))
+                                : ""),
+                    );
+                    displayResult(
+                        "⚖️ <strong>Moolimassa:</strong> " +
+                            nObj.M +
+                            " g/mol, <strong>" +
+                            (nObj.tyyppi === "happo" ? "Anionin" : "Kationin") +
+                            " varaus:</strong> " +
+                            (nObj.tyyppi === "happo" ? "+" : "-") +
+                            nLuku,
+                    );
+
+                    // Neutraloivan aineen pitoisuus
+                    var nPitoisuus = null;
+                    while (true) {
+                        var raw = prompt(
+                            "Anna neutraloivan aineen pitoisuus prosenteina (0-100) ja lisää perään 'm' jos aine on massaprosenttinen (esim. 32 m) tai 'v' jos tilavuusprosenttinen (esim. 70 v). Oletuksena on massaprosentti.",
+                        );
+                        if (raw === null) {
+                            throw new Error("Käyttäjä peruutti syötteen.");
+                        }
+                        raw = raw.trim();
+                        var m = raw.match(/^([\d.,]+)\s*(m|M|v|V)?$/);
+                        if (!m) {
+                            alert(
+                                "Virheellinen syöte. Käytä muotoa '32 m' tai '70 v'.",
+                            );
+                            continue;
+                        }
+                        var num = parseFloat(m[1].replace(",", "."));
+                        if (!isFinite(num) || num <= 0 || num > 100) {
+                            alert("Anna pitoisuus prosentteina (0-100).");
+                            continue;
+                        }
+                        var unit = (m[2] || "m").toLowerCase();
+                        if (unit !== "m" && unit !== "v") {
+                            alert("Yksikkö voi olla vain 'm' tai 'v'.");
+                            continue;
+                        }
+                        unit = unit === "m" ? "m" : "v";
+                        nPitoisuus = { arvo: num, yksikkö: unit };
+                        break;
+                    }
+
+                    displayResult(
+                        "🔬 <strong>Neutraloivan aineen pitoisuus:</strong> " +
+                            (nPitoisuus.arvo === 100
+                                ? "100% (puhdas aine)"
+                                : nPitoisuus.arvo +
+                                  (nPitoisuus.yksikkö === "m"
+                                      ? " massa%"
+                                      : " vol%")),
+                    );
+
+                    var nMassa = (nAinemäärä * nObj.M) / 1000;
+                    displayResult(
+                        "⚖️ <strong>Neutraloivan aineen massa:</strong> " +
+                            nMassa.toFixed(2) +
+                            " kg",
+                    );
+                    displayResult(
+                        "🧮 <strong>Neutraloivan aineen ainemäärä:</strong> " +
+                            nAinemäärä.toFixed(2) +
+                            " moolia",
+                    );
+
+                    // Lopputulos
+                    if (nPitoisuus.arvo === 100) {
+                        var nKokonaisMassa = nMassa;
+                        var nKokonaisTilavuus =
+                            nMassa / laskePuhdasTiheys(nObj);
+                        displayResult("<hr>");
+                        displayResult(
+                            "🎯 <strong>LOPPUTULOS:</strong> Neutraloivaa ainetta tarvitaan <strong>" +
+                                nKokonaisMassa.toFixed(2) +
+                                " kg</strong>, eli <strong>" +
+                                nKokonaisTilavuus.toFixed(2) +
+                                " L</strong>.",
+                        );
+                    } else if (nPitoisuus.arvo < 100) {
+                        if (nPitoisuus.yksikkö === "v") {
+                            var nTiheys = laskePuhdasTiheys(nObj);
+                            displayResult(
+                                "📊 <strong>Neutraloivan aineen tiheys:</strong> " +
+                                    nTiheys.toFixed(2) +
+                                    " kg/L",
+                            );
+                            var nTilavuus = nMassa / nTiheys;
+                            displayResult(
+                                "📐 <strong>Neutraloivan aineen tilavuus:</strong> " +
+                                    nTilavuus.toFixed(2) +
+                                    " L",
+                            );
+                            var nKokonaisTilavuus =
+                                nTilavuus / (nPitoisuus.arvo / 100);
+                            var nKokonaisTiheys = prompt(
+                                "Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna neutraloivan aineen tiheys (kg/L):",
+                            );
+                            if (nKokonaisTiheys === null) {
+                                throw new Error("Käyttäjä peruutti syötteen.");
+                            }
+                            nKokonaisTiheys = nKokonaisTiheys.replace(",", ".");
+                            nKokonaisTiheys = parseFloat(nKokonaisTiheys);
+                            if (
+                                !isFinite(nKokonaisTiheys) ||
+                                nKokonaisTiheys <= 0
+                            )
+                                throw new Error("Anna positiivinen numero.");
+                            var nKokonaisMassa =
+                                nKokonaisTilavuus * nKokonaisTiheys;
+                            displayResult("<hr>");
+                            displayResult(
+                                "🎯 <strong>LOPPUTULOS:</strong> Neutraloivaa ainetta tarvitaan <strong>" +
+                                    nKokonaisMassa.toFixed(2) +
+                                    " kg</strong>, eli <strong>" +
+                                    nKokonaisTilavuus.toFixed(2) +
+                                    " L</strong>.",
+                            );
+                        } else {
+                            var nKokonaisMassa =
+                                nMassa / (nPitoisuus.arvo / 100);
+                            var nKokonaisTiheys = prompt(
+                                "Laskua ei voi toteuttaa ilman aineen tiheyttä. Anna neutraloivan aineen tiheys (kg/L):",
+                            );
+                            if (nKokonaisTiheys === null) {
+                                throw new Error("Käyttäjä peruutti syötteen.");
+                            }
+                            nKokonaisTiheys = nKokonaisTiheys.replace(",", ".");
+                            nKokonaisTiheys = parseFloat(nKokonaisTiheys);
+                            if (
+                                !isFinite(nKokonaisTiheys) ||
+                                nKokonaisTiheys <= 0
+                            )
+                                throw new Error("Anna positiivinen numero.");
+                            var nKokonaisTilavuus =
+                                nKokonaisMassa / nKokonaisTiheys;
+                            displayResult("<hr>");
+                            displayResult(
+                                "🎯 <strong>LOPPUTULOS:</strong> Neutraloivaa ainetta tarvitaan <strong>" +
+                                    nKokonaisMassa.toFixed(2) +
+                                    " kg</strong>, eli <strong>" +
+                                    nKokonaisTilavuus.toFixed(2) +
+                                    " L</strong>.",
+                            );
+                        }
+                    }
+                } catch (error) {
+                    showError(error.message);
+                }
+            }
+
+            // Initialize table on page load
+            window.onload = function () {
+                populateTable();
+            };
+        </script>
+    </body>
+</html>
