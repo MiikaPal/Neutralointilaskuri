@@ -390,7 +390,7 @@ function startCalculation() {
         var nTodV = nMas / nTih;
         var nKokV = nTodV / (nPArv / 100);
         if (!isFinite(nKokTih) || nKokTih <= 0) {
-          alert("Neutraloivan aineen massaa ei voi laskea ilman tiheyttä, kun käytetään tilavuus-%. Laskettu vain tilavuus. Jos tarvitset aineen massaa, täytä neutraloivan aineen tiheyden kenttä (kg/L).");
+          alert("Laskettu vain tilavuus. Neutraloivan aineen massaa ei voi laskea ilman tiheyttä, kun käytetään tilavuus-%. Jos tarvitset aineen massaa, täytä neutraloivan aineen tiheyden kenttä (kg/L).");
         }
         var nKokMas = nKokV * nKokTih;
         console.log(
