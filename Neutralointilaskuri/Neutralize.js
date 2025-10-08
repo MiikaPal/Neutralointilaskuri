@@ -97,6 +97,13 @@ const aineet = [
     M: 97.99,
   },
   {
+    tyyppi: "happo",
+    nimi: "Muu happo",
+    H: undefined,
+    M: undefined,
+    tiheys: undefined,
+  },
+  {
     tyyppi: "emäs",
     olomuoto: "kiinteä",
     nimi: ["Natriumhydroksidi", "Lipeä", "Natriumlipeä"],
@@ -136,6 +143,13 @@ const aineet = [
     M: 100.09,
     tiheys: 2.71,
   },
+  {
+    tyyppi: "emäs",
+    nimi: "Muu emäs",
+    OH: undefined,
+    M: undefined,
+    tiheys: undefined,
+  },
 ];
 // Lisää loput hapot ja emäkset
 function findAineByIdentifier(input) {
@@ -159,16 +173,49 @@ function parseNumber(val) {
   if (val === null || val === undefined) return NaN;
   var s = String(val).trim().replace(",", ".");
   if (s === "") return NaN;
-  return parseFloat(s);
+  return Math.abs(parseFloat(s));
 }
 
 function laskeTiheys(obj, pitoisuus) {
   if (typeof obj.tiheys === "function") return obj.tiheys(pitoisuus);
+  if (obj.tiheys === undefined)
+    obj.tiheys = parseNumber(
+      window.prompt("Anna mukautetun aineen tiheys (kg/L):")
+    );
   return obj.tiheys;
 }
-function laskePuhdasTiheys(obj) {
+function laskePuhdasTiheys(obj, pitoisuus) {
   if (typeof obj.tiheys === "function") return obj.tiheys(100);
+  if (obj.tiheys === undefined) {
+    if (pitoisuus === 100)
+      obj.tiheys = parseNumber(
+        window.prompt("Anna mukautetun aineen tiheys (kg/L):")
+      );
+    else
+      obj.tiheys = parseNumber(
+        window.prompt("Anna mukautetun aineen puhdas tiheys (kg/L):")
+      );
+  }
   return obj.tiheys;
+}
+
+function resetCalculation() {
+  tTih = undefined;
+  nTih = undefined;
+  tLuku = undefined;
+  nLuku = undefined;
+  tObj = undefined;
+  nObj = undefined;
+  var muuh = findAineByIdentifier("Muu happo");
+  if (muuh) {
+    muuh.M = undefined;
+    muuh.tiheys = undefined;
+  }
+  var muue = findAineByIdentifier("Muu emäs");
+  if (muue) {
+    muue.M = undefined;
+    muue.tiheys = undefined;
+  }
 }
 
 function startCalculation() {
@@ -197,13 +244,13 @@ function startCalculation() {
     var tMArv = parseNumber(
       document.getElementById("torjuttava-maara-arvo")?.value
     );
-    if (!isFinite(tMArv) || tMArv <= 0) {
-      alert("Torjuttavan aineen määrän tulee olla positiivinen numero.");
+    if (!tMArv) {
+      alert("Täytä torjuttavan aineen määrä.");
       return;
     }
     var tMYks =
       document.getElementById("torjuttava-maara-yksikko")?.value || "L";
-  
+
     tMYks = tMYks === "kg" ? "kg" : "L";
 
     var tPArv = parseNumber(
@@ -211,37 +258,52 @@ function startCalculation() {
     );
     var tPYks =
       document.getElementById("torjuttava-pitoisuus-yksikko")?.value || "m";
-    if (!isFinite(tPArv) || tPArv <= 0 || tPArv > 100) {
+    if (!isFinite(tPArv) || tPArv > 100) {
       alert("Anna torjuttavan aineen pitoisuus 0-100.");
       return;
     }
     tPYks = tPYks === "mas" ? "m" : "v";
 
     var tLuku = tObj.H || tObj.OH;
+    if (tLuku === undefined) {
+      tLuku = window.prompt(
+        "Anna mukautetun aineen ionin varaus (esim. 1, 2 tai 3):"
+      );
+      tLuku = parseNumber(tLuku);
+      if (!tLuku) {
+        alert("Aineen varausta ei ole määritetty oikein.");
+        return;
+      }
+    }
+    console.log("Varaus: " + tLuku);
 
-    var tKokTih = parseNumber(document.getElementById("torjuttava-tiheys")?.value);
+    if (tObj.M === undefined) {
+      tObj.M = window.prompt("Anna mukautetun aineen moolimassa (g/mol):");
+      tObj.M = parseNumber(tObj.M);
+      if (!tObj.M) {
+        alert("Aineen moolimassaa ei ole määritetty oikein.");
+        return;
+      }
+    }
+    console.log("Moolimassa: " + tObj.M);
+
+    var tKokTih = parseNumber(
+      document.getElementById("torjuttava-tiheys")?.value
+    );
 
     if (tPArv === 100) {
-      if (tPYks === "m") { // Massa annettu
+      if (tPYks === "m") {
+        // Massa annettu
         tAM = (tMArv * 1000) / tObj.M;
-        console.log(
-          "Torj. aine mol:" + tAM.toFixed(4)
-        );
+        console.log("Torj. aine mol:" + tAM.toFixed(4));
       } else {
         // Tilavuus annettu
-        var tTih = laskePuhdasTiheys(tObj);
+        var tTih = laskePuhdasTiheys(tObj, tPArv);
         var tMas = tMArv * tTih;
         tAM = (tMas * 1000) / tObj.M;
-        console.log(
-          "Torj. aine tiheys: " + tTih.toFixed(4)
-          );
-        console.log(
-          "Massa: " + tMas.toFixed(4)
-          );
-        console.log(
-          "Ainemäärä (mol): " + tAM.toFixed(4)
-          );
-      
+        console.log("Torj. aine tiheys: " + tTih.toFixed(4));
+        console.log("Massa: " + tMas.toFixed(4));
+        console.log("Ainemäärä (mol): " + tAM.toFixed(4));
       }
     } else if (tPArv < 100) {
       if (tMYks === "L") {
@@ -249,39 +311,24 @@ function startCalculation() {
         if (tPYks === "v") {
           // Pitoisuus vol%
           var tTodM = tMArv * (tPArv / 100);
-          var tTih = laskePuhdasTiheys(tObj);
+          var tTih = laskePuhdasTiheys(tObj, tPArv);
           var tMas = tTodM * tTih;
           tAM = (tMas * 1000) / tObj.M;
-          console.log(
-            "Torj. aine tilavuus: " + tTodM.toFixed(4)
-            );
-          console.log(
-            "Tiheys: " + tTih.toFixed(4)
-            );
-          console.log(
-            "Massa: " + tMas.toFixed(4)
-            );
-          console.log(
-            "Ainemäärä (mol): " + tAM.toFixed(4)
-            );
+          console.log("Torj. aine tilavuus: " + tTodM.toFixed(4));
+          console.log("Tiheys: " + tTih.toFixed(4));
+          console.log("Massa: " + tMas.toFixed(4));
+          console.log("Ainemäärä (mol): " + tAM.toFixed(4));
         } else {
           // Pitoisuus mass%
-          var tTodM = tMArv * (tPArv / 100);
           var tTih = laskeTiheys(tObj, tPArv);
+          var tKokM = tMArv * tTih;
+          var tTodM = tKokM * (tPArv / 100);
           var tMas = tTodM * tTih;
           tAM = (tMas * 1000) / tObj.M;
-          console.log(
-            "Torj. aine tilavuus: " + tTodM.toFixed(4)
-            );
-          console.log(
-            "Tiheys: " + tTih.toFixed(4)
-            );
-          console.log(
-            "Massa: " + tMas.toFixed(4)
-            );
-          console.log(
-            "Ainemäärä (mol): " + tAM.toFixed(4)
-            );
+          console.log("Torj. aine massa: " + tTodM.toFixed(4));
+          console.log("Tiheys: " + tTih.toFixed(4));
+          console.log("Massa: " + tMas.toFixed(4));
+          console.log("Ainemäärä (mol): " + tAM.toFixed(4));
         }
       } else {
         // Massa annettu
@@ -289,37 +336,28 @@ function startCalculation() {
           // Pitoisuus mass%
           var tTodM = tMArv * (tPArv / 100);
           tAM = (tTodM * 1000) / tObj.M;
-          console.log(
-            "Torj. aine massa: " + tTodM.toFixed(4)
-            );
-          console.log(
-            "Ainemäärä (mol): " + tAM.toFixed(4)
-            );
+          console.log("Torj. aine massa: " + tTodM.toFixed(4));
+          console.log("Ainemäärä (mol): " + tAM.toFixed(4));
         } else {
           // Pitoisuus vol%
-          if (!isFinite(tKokTih) || tKokTih <= 0) {
-            alert("Laskua ei voi suorittaa ilman tiheyttä, kun käytetään massaa ja tilavuus-%. Täytä torjuttavan aineen tiheyden kenttä (kg/L).");
+          if (!isFinite(tKokTih)) {
+            alert(
+              "Laskua ei voi suorittaa ilman tiheyttä, kun käytetään massaa ja tilavuus-%. Täytä torjuttavan aineen tiheyden kenttä (kg/L)."
+            );
             return;
           }
           var tTodV = (tMArv / tKokTih) * (tPArv / 100);
           var tMas = tTodV * tKokTih;
           tAM = (tMas * 1000) / tObj.M;
-          console.log(
-            "Torj. aine tilavuus: " + tTodV.toFixed(4)
-            );
-          console.log(
-            "Massa: " + tMas.toFixed(4)
-            );
-          console.log(
-            "Ainemäärä (mol): " + tAM.toFixed(4)
-            );
+          console.log("Torj. aine tilavuus: " + tTodV.toFixed(4));
+          console.log("Massa: " + tMas.toFixed(4));
+          console.log("Ainemäärä (mol): " + tAM.toFixed(4));
         }
       }
     } else {
       throw new Error("Jokin meni pieleen. Tarkista kaikki syötteet.");
     }
     // Torjuttavan aineen ainemäärä kaikilla eri syöteyhdistelmillä
-    
 
     var nAInput = document.getElementById("neutraloivat-aineet");
     if (!nAInput) {
@@ -342,8 +380,30 @@ function startCalculation() {
       return;
     }
     var nLuku = nObj.H || nObj.OH;
+    if (nLuku === undefined) {
+      nLuku = window.prompt(
+        "Anna mukautetun aineen ionin varaus (esim. 1, 2 tai 3):"
+      );
+      nLuku = parseNumber(nLuku);
+      if (!nLuku) {
+        alert("Aineen varausta ei ole määritetty oikein.");
+        return;
+      }
+    }
+    console.log("Varaus: " + nLuku);
+
     var nKer = tLuku / nLuku;
     var nAM = tAM * nKer;
+
+    if (nObj.M === undefined) {
+      nObj.M = window.prompt("Anna mukautetun aineen moolimassa (g/mol):");
+      nObj.M = parseNumber(nObj.M);
+      if (!nObj.M) {
+        alert("Aineen moolimassaa ei ole määritetty oikein.");
+        return;
+      }
+    }
+    console.log("Moolimassa: " + nObj.M);
 
     if (tObj.tyyppi == nObj.tyyppi) {
       alert(
@@ -351,78 +411,64 @@ function startCalculation() {
       );
       return;
     }
-    // Tarkistaa onko torjuttava aine ja neutraloiva aine eri tyyppiä
 
     nPArv = parseNumber(
       document.getElementById("neutraloiva-pitoisuus-arvo")?.value
     );
     nPYks =
       document.getElementById("neutraloiva-pitoisuus-yksikko")?.value || "m";
-    if (!isFinite(nPArv) || nPArv <= 0 || nPArv > 100) {
+    if (!isFinite(nPArv) || nPArv > 100) {
       alert("Anna neutraloivan aineen pitoisuus 0-100.");
       return;
     }
     nPYks = nPYks === "mas" ? "m" : "v";
     var nMas = (nAM * nObj.M) / 1000;
-    var nKokTih = parseNumber(document.getElementById("neutraloiva-tiheys")?.value);
-    
-
-    // Laskee ja tulostaa neutraloivan aineen massan
+    var nKokTih = parseNumber(
+      document.getElementById("neutraloiva-tiheys")?.value
+    );
 
     if (nPArv === 100) {
       var nKokMas = nMas;
-      var nTih = laskePuhdasTiheys(nObj);
+      var nTih = laskePuhdasTiheys(nObj, nPArv);
       var nKokV = nMas / nTih;
+      console.log("Neut. aine tiheys: " + nTih.toFixed(4));
       console.log(
-        "Neut. aine tiheys: " + nTih.toFixed(4)
-      );
-      console.log(
-        "Tulos: " +
-          nKokMas.toFixed(4) +
-          " kg, tai " +
-          nKokV.toFixed(4) +
-          " L."
+        "Tulos: " + nKokMas.toFixed(4) + " kg, tai " + nKokV.toFixed(4) + " L."
       );
     } else if (nPArv < 100) {
       if (nPYks === "v") {
         // Pitoisuus vol%
-        var nTih = laskePuhdasTiheys(nObj);
+        var nTih = laskePuhdasTiheys(nObj, nPArv);
         var nTodV = nMas / nTih;
         var nKokV = nTodV / (nPArv / 100);
-        if (!isFinite(nKokTih) || nKokTih <= 0) {
-          alert("Laskettu vain tilavuus. Neutraloivan aineen massaa ei voi laskea ilman tiheyttä, kun käytetään tilavuus-%. Jos tarvitset aineen massaa, täytä neutraloivan aineen tiheyden kenttä (kg/L).");
+        if (!isFinite(nKokTih)) {
+          alert(
+            "Laskettu vain tilavuus. Neutraloivan aineen massaa ei voi laskea ilman tiheyttä, kun käytetään tilavuus-%. Jos tarvitset aineen massaa, täytä neutraloivan aineen tiheyden kenttä (kg/L)."
+          );
         }
         var nKokMas = nKokV * nKokTih;
-        console.log(
-          "Neut. aine puhdas tiheys: " + nTih.toFixed(4)
-          );
-        console.log(
-          "Tilavuus: " + nTodV.toFixed(4)
-          );
+        console.log("Neut. aine puhdas tiheys: " + nTih.toFixed(4));
+        console.log("Tilavuus: " + nTodV.toFixed(4));
         console.log(
           "Tulos: " +
-          nKokMas.toFixed(4) +
-          " kg, tai " +
-          nKokV.toFixed(4) +
-          " L."
+            nKokMas.toFixed(4) +
+            " kg, tai " +
+            nKokV.toFixed(4) +
+            " L."
         );
       } else {
         // Pitoisuus massa%
         var nKokMas = nMas / (nPArv / 100);
         var nTih = laskeTiheys(nObj, nPArv);
         var nKokV = nKokMas / nTih;
-        console.log(
-          "Neut. aine massa: " + nMas.toFixed(4)
-        );
-        console.log(
-          "Tiheys: " + nTih.toFixed(4)
-        );
+        console.log("Neut. aine massa: " + nMas.toFixed(4));
+        console.log("Tiheys: " + nTih.toFixed(4));
         console.log(
           "Tulos: " +
-          nKokMas.toFixed(4) +
-          " kg, tai " +
-          nKokV.toFixed(4) +
-          " L."
+            nKokMas.toFixed(4) +
+            " kg, tai " +
+            nKokV.toFixed(4) +
+            " L."
         );
       }
     } else {
@@ -447,28 +493,34 @@ function startCalculation() {
         puhdasmassa: typeof nMas !== "undefined" ? nMas : null,
         kokonaistilavuus: typeof nKokV !== "undefined" ? nKokV : null,
         kokonaismassa: typeof nKokMas !== "undefined" ? nKokMas : null,
-      }
-    }
+      },
+    };
     window.calculationResult = result;
     try {
       var ev = new CustomEvent("calculationDone", { detail: result });
       window.dispatchEvent(ev);
     } catch (err) {
-      // fallback for very old browsers
       try {
         var ev2 = document.createEvent("CustomEvent");
         ev2.initCustomEvent("calculationDone", true, true, result);
         window.dispatchEvent(ev2);
       } catch (e) {
-        // if dispatch fails, continue silently
+        console.warn(
+          "CustomEvent not supported, cannot dispatch calculationDone event."
+        );
       }
     }
-
     console.log("Lasku valmis:", result);
     return result;
   } catch (err) {
     console.error("Lasku epäonnistui:", err && err.message ? err.message : err);
     alert("Laskussa tapahtui virhe. Katso lisätiedot konsolista.");
+  } finally {
+    try {
+      resetCalculation();
+    } catch (e) {
+      console.warn("resetCalculation failed:", e);
+    }
   }
 }
 

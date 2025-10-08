@@ -454,7 +454,10 @@
         });
       }
       if (clearBtn) {
-        clearBtn.addEventListener('click', function(){ clearForm(); });
+        clearBtn.addEventListener('click', function(){
+          if (typeof clearForm === 'function') clearForm();
+          else alert('clearForm funktio puuttuu.');
+        });
       }
     });
   </script>
