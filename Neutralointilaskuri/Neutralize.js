@@ -516,11 +516,8 @@ function startCalculation() {
     console.error("Lasku epäonnistui:", err && err.message ? err.message : err);
     alert("Laskussa tapahtui virhe. Katso lisätiedot konsolista.");
   } finally {
-    try {
       resetCalculation();
-    } catch (e) {
-      console.warn("resetCalculation failed:", e);
-    }
+    
   }
 }
 
