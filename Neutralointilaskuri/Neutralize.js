@@ -517,7 +517,6 @@ function startCalculation() {
     alert("Laskussa tapahtui virhe. Katso lisätiedot konsolista.");
   } finally {
       resetCalculation();
-    
   }
 }
 
