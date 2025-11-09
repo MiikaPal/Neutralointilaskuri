@@ -1,7 +1,7 @@
 #main-area {
     margin: 0px auto;
     max-width: 1200px;
-    padding: 15px;
+    padding: 15px 0px 15px 0px;
     align-self: center;
     position: relative;
     background-color: #f5f5f5;
@@ -11,40 +11,156 @@
     flex-direction: column;
     align-items: stretch;
     width: 100%;
-    font-size: 18px;
 }
 #Laskuriosa {
+    padding: 0px 5px 5px 5px;
     margin: 0px auto;
-    max-width: 1100px;
+    max-width: 800px;
+    font-size: 16px;
 }
 #laskuri-label {
+    font-size: 20px;
     font-weight: normal;
+}
+.input-number {
+    font-size: 19px;
+    padding: 7px;
+    border-radius: 5px;
+    border: 1px solid #8e8e8e;
+    appearance: textfield;
+    width: 105px;
+}
+select {
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #8e8e8e;
+    cursor: pointer;
+}
+#valinta-container {
+    margin: 1px 0px 10px 0px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 100%;
+    width: 100%;
+    min-width: 0;
+}
+#valinta-container .aine-valinta,
+#valinta-container select {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+#valinta-container .haku-nappi,
+#valinta-container button {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+}
+.haku-nappi {
+    font-size: 14px;
+    padding: 5px 3px;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+    top: 2px;
+}
+@media (max-width: 520px) {
+    #valinta-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    #valinta-container .haku-nappi,
+    #valinta-container button {
+        width: 100%;
+        text-align: center;
+    }
+}
+#maara-container {
+    margin: 1px 0px 10px 0px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+#pitoisuus-container {
+    margin: 1px 0px 8px 0px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.conditional-lisatiedot {
+    margin: 1px 0px 10px 0px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+}
+.conditional-lisatiedot .lisatieto-container {
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+.tiheys-container {
+    justify-self: center;
+    width:fit-content;
+}
+.moolimassa-container {
+    justify-self: center;
+}
+.ekvivalentti-container {
+    justify-self: center;
+}
+.ehdollinen-tiheys {
+    width: 80px;
+    font-size: 15px;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #8e8e8e;
+    background-color: #f0f0f0;
+    appearance: textfield;
+}
+.ehdollinen-moolimassa {
+    width: 80px;
+    font-size: 15px;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #8e8e8e;
+    background-color: #f0f0f0;
+    appearance: textfield;
+}
+.ehdollinen-ekvivalentti {
+    width: 80px;
+    font-size: 15px;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #8e8e8e;
+    background-color: #f0f0f0;
+    appearance: textfield;
 }
 #lisatieto-label {
     font-weight: lighter;
-    font-size: 16px;
+    font-size: 18px;
 }
-#torjuttavat-aineet {
-    width: 80%;
-    font-size: 12px;
-    padding: 6px;
-    margin: 4px 0px 0px 0px;
-}
-#neutraloivat-aineet {
-    width: 80%;
-    font-size: 12px;
-    padding: 6px;
-    margin: 4px 0px 0px 0px;
-}
-#lisatieto {
-    width: 50%;
+.aine-valinta {
+    max-width: 72%;
+    width: fit-content;
+    font-size: 18px;
+    padding: 8px;
     margin: 4px 0px 0px 0px;
 }
 button {
-    font-size: 12px;
-    padding: 5px 4px;
+    font-size: 15px;
+    padding: 5px 3px;
     cursor: pointer;
     text-align: center;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    background-color: #f5f5f5;
 }
 #output {
     margin: 0px auto;
@@ -54,6 +170,8 @@ button {
 #tulokset {
     font-weight: bolder;
 }
-#haku-btn {
-    margin-left: 0px;
+option {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
 }

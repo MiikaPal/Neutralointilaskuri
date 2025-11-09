@@ -1,71 +1,115 @@
 <!doctype html>
 <html lang="fi">
+
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Neutralointilaskuri</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div id="main-area" class="panel panel-default">
     <app-neutralointilaskuri>
       <div class="alueet">
-    <div id="Laskuriosa" class="panel-body">
-      <label id="laskuri-label" for="torjuttavat-aineet">Torjuttava aine:</label>
-      <br>
-      <select id="torjuttavat-aineet" aria-label="Torjuttavat aineet"></select>
-        <button type="button" id="torjuttava-haku-btn" title="Avaa hakuikkuna">Haku</button>
-      <datalist id="torjuttavat-list"></datalist>
-      <br>
-      <label id="laskuri-label" for="torjuttava-maara">Aineen määrä</label>
-      <br>
-      <input type="number" id="torjuttava-maara-arvo" placeholder="Määrä" min="0" step="any">
-      <select id="torjuttava-maara-yksikko">
-        <option value="l">tilavuus (L)</option>
-        <option value="kg">massa (kg)</option>
-      </select>
-      <br>
-      <label id="laskuri-label" for="torjuttava-pitoisuus">Pitoisuus</label>
-      <br>
-      <input type="number" id="torjuttava-pitoisuus-arvo" placeholder="Pitoisuus %" min="0" max="100" step="any">
-      <select id="torjuttava-pitoisuus-yksikko">
-        <option value="mas">massa-%</option>
-        <option value="vol">tilavuus-%</option>
-      </select>
-      <br>
-      <div id="torjuttava-lisatieto-container" style="display:block">
-        <label id="lisatieto-label" for="torjuttava-lisatieto">Tiheys tarvittaessa</label>
-        <br>
-        <input type="number" id="torjuttava-tiheys" placeholder="Tiheys (kg/l)" min="0" step="any">
-      </div>
-      <br><br>
-      <label id="laskuri-label" for="neutraloivat-aineet">Neutraloiva aine:</label>
-      <br>
-      <select id="neutraloivat-aineet" aria-label="Neutraloivat aineet"></select>
-        <button type="button" id="neutraloiva-haku-btn" title="Avaa hakuikkuna">Haku</button>
-      <datalist id="neutraloivat-list"></datalist>
-      <br>
-      <label id="laskuri-label" for="neutraloiva-pitoisuus">Pitoisuus</label>
-      <br>
-      <input type="number" id="neutraloiva-pitoisuus-arvo" placeholder="Pitoisuus %" min="0" max="100" step="any">
-      <select id="neutraloiva-pitoisuus-yksikko">
-        <option value="mas">massa-%</option>
-        <option value="vol">tilavuus-%</option>
-      </select>
-      <br>
-      <div id="neutraloiva-lisatieto-container" style="display:block">
-        <label id="lisatieto-label" for="neutraloiva-lisatieto">Tiheys tarvittaessa</label>
-        <br>
-        <input type="number" id="neutraloiva-tiheys" placeholder="Tiheys (kg/l)" min="0" step="any">
-      </div>
-      <br><br>
-      <button id="start-btn">Laske</button>
-      <button id="clear-btn" type="button">Tyhjennä</button>
-      </div> 
-    <div id="output" class="panel-body">
-      <div id="result"></div>
-    </div>
-    </div>
+        <div id="Laskuriosa" class="panel-body">
+          <div id="aineetiedot" class="panel-body">
+            <label id="laskuri-label" for="torjuttavat-aineet">Torjuttava aine:</label>
+            <br>
+            <div id="valinta-container">
+              <select id="torjuttavat-aineet" aria-label="Torjuttavat aineet" class="aine-valinta"></select>
+              <button type="button" id="torjuttava-haku-btn" class="haku-nappi" title="Avaa hakuikkuna">Haku</button>
+            </div>
+            <datalist id="torjuttavat-list"></datalist>
+            <label id="laskuri-label" for="torjuttava-maara">Liuoksen kokonaismäärä</label>
+            <br>
+            <div id="maara-container">
+              <input type="number" id="torjuttava-maara-arvo" class="input-number" placeholder="Määrä" min="0"
+                step="any">
+              <select id="torjuttava-maara-yksikko">
+                <option value="l">tilavuus (litraa)</option>
+                <option value="kg">massa (kg)</option>
+              </select>
+            </div>
+            <label id="laskuri-label" for="torjuttava-pitoisuus">Pitoisuus</label>
+            <br>
+            <div id="pitoisuus-container">
+              <input type="number" id="torjuttava-pitoisuus-arvo" class="input-number" placeholder="Pitoisuus %" min="0"
+                max="100" step="any">
+              <select id="torjuttava-pitoisuus-yksikko">
+                <option value="mas">massa-%</option>
+                <option value="vol">tilavuus-%</option>
+              </select>
+            </div>
+            <div id="conditional-torjuttava" class="conditional-lisatiedot">
+              <div id="torjuttava-tiheys-container" class="tiheys-container lisatieto-container">
+                <label id="lisatieto-label" for="torjuttava-lisatieto" class="ehdollinen-label">Tiheys</label>
+                <br>
+                <input type="number" id="torjuttava-tiheys" class="ehdollinen-tiheys" placeholder="(kg/L)"
+                  min="0" step="any">
+              </div>
+              <div id="torjuttava-moolimassa-container" class="moolimassa-container lisatieto-container">
+                <label id="lisatieto-label" for="torjuttava-moolimassa"
+                  class="ehdollinen-moolimassa-label">Moolimassa</label>
+                <br>
+                <input type="number" id="torjuttava-moolimassa" class="ehdollinen-moolimassa"
+                  placeholder="(g/mol)" min="0" step="any">
+              </div>
+              <div id="torjuttava-ekvivalentti-container" class="ekvivalentti-container lisatieto-container">
+                <label id="lisatieto-label" for="torjuttava-ekvivalentti" class="ehdollinen-label">Ekvivalentti</label>
+                <br>
+                <input type="number" id="torjuttava-ekvivalentti" class="ehdollinen-ekvivalentti" placeholder="(H+/OH-)" min="-10"
+                  max="10" step="1">
+              </div>
+            </div>
+            <br><br>
+            <label id="laskuri-label" for="neutraloivat-aineet">Neutraloiva aine:</label>
+            <br>
+            <div id="valinta-container">
+              <select id="neutraloivat-aineet" aria-label="Neutraloivat aineet" class="aine-valinta"></select>
+              <button type="button" id="neutraloiva-haku-btn" class="haku-nappi" title="Avaa hakuikkuna">Haku</button>
+            </div>
+            <datalist id="neutraloivat-list"></datalist>
+            <label id="laskuri-label" for="neutraloiva-pitoisuus">Pitoisuus</label>
+            <br>
+            <div id="pitoisuus-container">
+              <input type="number" id="neutraloiva-pitoisuus-arvo" class="input-number" placeholder="Pitoisuus %"
+                min="0" max="100" step="any">
+              <select id="neutraloiva-pitoisuus-yksikko">
+                <option value="mas">massa-%</option>
+                <option value="vol">tilavuus-%</option>
+              </select>
+            </div>
+              <div id="conditional-neutraloiva" class="conditional-lisatiedot">
+                <div id="neutraloiva-tiheys-container" class="tiheys-container lisatieto-container">
+                  <label id="lisatieto-label" for="neutraloiva-lisatieto">Tiheys</label>
+                  <br>
+                  <input type="number" id="neutraloiva-tiheys" class="ehdollinen-tiheys" placeholder="(kg/L)" min="0"
+                    step="any">
+                </div>
+                <div id="neutraloiva-moolimassa-container" class="moolimassa-container lisatieto-container">
+                  <label id="lisatieto-label" for="neutraloiva-moolimassa"
+                    class="ehdollinen-moolimassa-label">Moolimassa</label>
+                  <br>
+                  <input type="number" id="neutraloiva-moolimassa" class="ehdollinen-moolimassa"
+                    placeholder="(g/mol)" min="0" step="any">
+                </div>
+                <div id="neutraloiva-ekvivalentti-container" class="ekvivalentti-container lisatieto-container">
+                  <label id="lisatieto-label" for="neutraloiva-ekvivalentti" class="ehdollinen-label">Ekvivalentti</label>
+                  <br>
+                  <input type="number" id="neutraloiva-ekvivalentti" class="ehdollinen-ekvivalentti" placeholder="Ekvivalentti" min="-10"
+                    max="10" step="1">
+                </div>
+              </div>
+              <div id="nappi-container">
+                <button id="start-btn" onclick="startCalculation()" accesskey="l">Laske</button>
+                <button id="clear-btn" onclick="resetCalculation()" accesskey="c">Tyhjennä</button>
+              </div>
+            </div>
+            <div id="output" class="panel-body">
+              <div id="result"></div>
+            </div>
+        </div>
     </app-neutralointilaskuri>
   </div>
   <script src="Neutralize.js"></script>
@@ -77,16 +121,16 @@
 
     function displayText(item) {
       var name = Array.isArray(item.nimi) ? item.nimi[0] : item.nimi || "";
-      var kaava = item.kaava || "";
-      var yk = item.YK === undefined || item.YK === null ? "" : (Array.isArray(item.YK) ? item.YK.join(', ') : item.YK);
+      var kaava = Array.isArray(item.kaava) ? item.kaava[0] : item.kaava || "";
+      var yk = item.YK === undefined || item.YK === null ? "" : (Array.isArray(item.YK) ? item.YK.join(", ") : item.YK);
       return name + (kaava ? " (" + kaava + ")" : "") + (yk ? " - YK: " + yk : "");
     }
 
     function getSelectedTorjTyyppi() {
-      // returns the tyyppi (e.g. 'happo' or 'emäs') of the currently selected torjuttava,
+      // returns the tyyppi (e.g. "happo" or "emäs") of the currently selected torjuttava,
       // or null if none / unknown
       try {
-        var sel = document.getElementById('torjuttavat-aineet');
+        var sel = document.getElementById("torjuttavat-aineet");
         if (!sel) return null;
         var val = sel.value;
         if (!val) return null;
@@ -97,57 +141,77 @@
 
     function refreshNeutralOptions(filterTyyppi) {
       // Populate neutraloivat select & datalist excluding items with same tyyppi as filterTyyppi.
-      var neutList = document.getElementById('neutraloivat-list');
-      var neutSelect = document.getElementById('neutraloivat-aineet');
+      var neutList = document.getElementById("neutraloivat-list");
+      var neutSelect = document.getElementById("neutraloivat-aineet");
       if (!neutSelect) return;
-      if (neutList) neutList.innerHTML = '';
-      neutSelect.innerHTML = '';
+
+      var current = neutSelect.value;
+
+      if (neutList) neutList.innerHTML = "";
+      neutSelect.innerHTML = "";
       // placeholder
-      var placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.text = '-- Valitse --';
+      var placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.text = "-- Valitse --";
       neutSelect.appendChild(placeholder);
+
       aineet.forEach(function (item) {
         if (filterTyyppi && item.tyyppi === filterTyyppi) return; // skip same type
         var name = Array.isArray(item.nimi) ? item.nimi[0] : item.nimi || "";
         var full = displayText(item);
         if (neutList) {
-          var opt2 = document.createElement('option');
+          var opt2 = document.createElement("option");
           opt2.value = name;
           neutList.appendChild(opt2);
         }
-        var sopt = document.createElement('option');
+        var sopt = document.createElement("option");
         sopt.value = name;
         sopt.text = full;
         neutSelect.appendChild(sopt.cloneNode(true));
       });
+      if (current) {
+        // try to restore previous selection if still valid
+        var exists = Array.prototype.slice.call(neutSelect.options).some(function (o) { return o.value === current; });
+        if (exists) {
+          neutSelect.value = current;
+        } else if (typeof findAineByIdentifier === "function") {
+          var curAine = findAineByIdentifier(current);
+          if (curAine && curAine.tyyppi !== filterTyyppi) {
+            var opt = document.createElement("option");
+           opt.value = current;
+            opt.text = displayText(curAine);
+            neutSelect.appendChild(opt);
+            neutSelect.value = current;
+          }
+        }
+      }
     }
 
     function populateDatalist() {
-      var torjList = document.getElementById('torjuttavat-list');
-      var torjSelect = document.getElementById('torjuttavat-aineet');
-      var neutSelect = document.getElementById('neutraloivat-aineet');
+      var torjList = document.getElementById("torjuttavat-list");
+      var torjSelect = document.getElementById("torjuttavat-aineet");
+      var neutSelect = document.getElementById("neutraloivat-aineet");
       if (!torjSelect || !neutSelect) return;
 
       // Clear existing options
-      if (torjList) torjList.innerHTML = '';
-      torjSelect.innerHTML = '';
+      if (torjList) torjList.innerHTML = "";
+      torjSelect.innerHTML = "";
 
       // Add placeholder for torjuttavat
-      var placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.text = '-- Valitse --';
+      var placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.text = "-- Valitse --";
       torjSelect.appendChild(placeholder);
 
       aineet.forEach(function (item) {
         var name = Array.isArray(item.nimi) ? item.nimi[0] : item.nimi || "";
         var full = displayText(item);
         if (torjList) {
-          var opt = document.createElement('option');
+          var opt = document.createElement("option");
           opt.value = name;
           torjList.appendChild(opt);
         }
-        var sopt = document.createElement('option');
+        var sopt = document.createElement("option");
         sopt.value = name;
         sopt.text = full;
         torjSelect.appendChild(sopt.cloneNode(true));
@@ -160,177 +224,222 @@
     // Clear all inputs, selects and results
     function clearForm() {
       try {
-        var tSel = document.getElementById('torjuttavat-aineet');
-        var nSel = document.getElementById('neutraloivat-aineet');
-        if (tSel) tSel.value = '';
-        if (nSel) nSel.value = '';
+        var tSel = document.getElementById("torjuttavat-aineet");
+        var nSel = document.getElementById("neutraloivat-aineet");
+        if (tSel) tSel.value = "";
+        if (nSel) nSel.value = "";
         // Clear numeric and text inputs
         var ids = [
-          'torjuttava-maara-arvo','torjuttava-pitoisuus-arvo','torjuttava-tiheys',
-          'neutraloiva-pitoisuus-arvo','neutraloiva-tiheys'
+          "torjuttava-maara-arvo", "torjuttava-pitoisuus-arvo", "torjuttava-tiheys", "torjuttava-moolimassa", "torjuttava-ekvivalentti",
+          "neutraloiva-pitoisuus-arvo", "neutraloiva-tiheys", "neutraloiva-moolimassa", "neutraloiva-ekvivalentti"
         ];
-        ids.forEach(function(id){ var el = document.getElementById(id); if(el) el.value = ''; });
+        ids.forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ""; });
         // Reset selects to defaults
-        var selIds = ['torjuttava-maara-yksikko','torjuttava-pitoisuus-yksikko','neutraloiva-pitoisuus-yksikko'];
-        selIds.forEach(function(id){ var el = document.getElementById(id); if(el) el.selectedIndex = 0; });
+        var selIds = ["torjuttava-maara-yksikko", "torjuttava-pitoisuus-yksikko", "neutraloiva-pitoisuus-yksikko"];
+        selIds.forEach(function (id) { var el = document.getElementById(id); if (el) el.selectedIndex = 0; });
         // Clear result display and stored result
-        var resultEl = document.getElementById('result');
-        if (resultEl) resultEl.innerHTML = '';
+        var resultEl = document.getElementById("result");
+        if (resultEl) resultEl.innerHTML = "";
         if (window.calculationResult) delete window.calculationResult;
         // repopulate neutral options (no filter) after clearing
         refreshNeutralOptions(null);
+
+        if (typeof updateTorjuttavaConditional === "function") updateTorjuttavaConditional();
+        if (typeof updateNeutraloivaConditional === "function") updateNeutraloivaConditional();
+        
         // focus first selectable field
         if (tSel) tSel.focus();
-      } catch (e) { console.warn('clearForm failed', e); }
+      } catch (e) { console.warn("clearForm failed", e); }
     }
 
     function createSearchModal(haku) {
       // modal elements
-      var overlay = document.createElement('div');
-      overlay.style.position = 'fixed';
-      overlay.style.left = '0';
-      overlay.style.top = '0';
-      overlay.style.right = '0';
-      overlay.style.bottom = '0';
-      overlay.style.background = 'rgba(0,0,0,0.4)';
+      var overlay = document.createElement("div");
+      overlay.style.position = "fixed";
+      overlay.style.left = "0";
+      overlay.style.top = "0";
+      overlay.style.right = "0";
+      overlay.style.bottom = "0";
+      overlay.style.background = "rgba(0,0,0,0.4)";
       overlay.style.zIndex = 9999;
-      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute("role", "dialog");
 
-      var box = document.createElement('div');
-      box.style.maxWidth = '720px';
-      box.style.margin = '6% auto';
-      box.style.background = '#fff';
-      box.style.padding = '12px';
-      box.style.borderRadius = '6px';
-      box.style.boxShadow = '0 2px 12px rgba(0,0,0,0.3)';
+      var box = document.createElement("div");
+      box.style.maxWidth = "720px";
+      box.style.margin = "6% auto";
+      box.style.background = "#fff";
+      box.style.padding = "12px";
+      box.style.borderRadius = "6px";
+      box.style.boxShadow = "0 2px 12px rgba(0,0,0,0.3)";
       overlay.appendChild(box);
 
-      var title = document.createElement('h3');
-      title.textContent = haku === 'torjuttava' ? 'Hae torjuttavaa ainetta' : 'Hae neutraloivaa ainetta';
+      var title = document.createElement("h3");
+      title.textContent = haku === "torjuttava" ? "Hae torjuttavaa ainetta" : "Hae neutraloivaa ainetta";
       box.appendChild(title);
 
-      var input = document.createElement('input');
-      input.type = 'search';
-      input.placeholder = 'Kirjoita aineen nimi, kaava tai YK-numero...';
-      input.style.width = '100%';
-      input.style.boxSizing = 'border-box';
-      input.style.marginBottom = '8px';
+      var input = document.createElement("input");
+      input.type = "search";
+      input.placeholder = "Kirjoita aineen nimi, kaava tai YK-numero...";
+      input.style.width = "100%";
+      input.style.boxSizing = "border-box";
+      input.style.marginBottom = "8px";
       box.appendChild(input);
 
-      var list = document.createElement('div');
-      list.style.maxHeight = '260px';
-      list.style.overflow = 'auto';
-      list.style.border = '1px solid #ddd';
-      list.style.padding = '6px';
-      list.style.borderRadius = '4px';
+      var list = document.createElement("div");
+      list.style.maxHeight = "260px";
+      list.style.overflow = "auto";
+      list.style.border = "1px solid #ddd";
+      list.style.padding = "6px";
+      list.style.borderRadius = "4px";
       box.appendChild(list);
 
       function closeModal() {
         document.body.removeChild(overlay);
-        document.removeEventListener('keydown', onKeyDown);
+        document.removeEventListener("keydown", onKeyDown);
       }
 
       function onKeyDown(e) {
-        if (e.key === 'Escape') closeModal();
+        if (e.key === "Escape") closeModal();
       }
-      document.addEventListener('keydown', onKeyDown);
+      document.addEventListener("keydown", onKeyDown);
 
       function renderResults(q) {
-        var qq = String(q || '').trim().toLowerCase();
-        list.innerHTML = '';
+        var qq = String(q || "").trim().toLowerCase();
+        list.innerHTML = "";
         if (!qq) {
-          list.textContent = 'Kirjoita hakusana näyttääksesi tuloksia.';
+          list.textContent = "Kirjoita hakusana näyttääksesi tuloksia.";
           return;
         }
+
+        var qNorm = qq.replace(/[\s\-]/g, "");
+
         var selectedTorjTyyppi = getSelectedTorjTyyppi();
         var matches = aineet.filter(function (item) {
           // If searching for neutraloiva and a torjuttava is selected, skip same tyyppi
-          if (haku === 'neutraloiva' && selectedTorjTyyppi && item.tyyppi === selectedTorjTyyppi) return false;
-          // check names, kaava, YK
+          if (haku === "neutraloiva" && selectedTorjTyyppi && item.tyyppi === selectedTorjTyyppi) return false;
+          // etsi nimet, kaavat, YK ja CAS
           var hay = [];
           if (item.nimi) hay.push(item.nimi);
           if (item.kaava) hay.push(item.kaava);
           if (item.YK) hay.push(item.YK);
+          if (item.CAS) hay.push(item.CAS);
+
           return hay.some(function (v) {
             if (Array.isArray(v)) {
-              return v.some(function (el) { return String(el).toLowerCase().indexOf(qq) !== -1; });
+              return v.some(function (el) {
+                if (el === undefined || el === null) return false;
+                var s = String(el).toLowerCase();
+                var sNorm = s.replace(/[\s\-]/g, "");
+                return s.indexOf(qq) !== -1 || sNorm.indexOf(qNorm) !== -1;
+              });
             }
-            return String(v).toLowerCase().indexOf(qq) !== -1;
+            var s = String(v).toLowerCase();
+            var sNorm = s.replace(/[\s\-]/g, "");
+            return s.indexOf(qq) !== -1 || sNorm.indexOf(qNorm) !== -1;
           });
         });
         if (matches.length === 0) {
-          list.textContent = 'Ei tuloksia.';
+          list.textContent = "Ei tuloksia.";
           return;
         }
         matches.forEach(function (item) {
-          var row = document.createElement('div');
-          row.style.padding = '6px';
-          row.style.borderBottom = '1px solid #eee';
-          row.style.cursor = 'pointer';
+          var row = document.createElement("div");
+          row.style.padding = "6px";
+          row.style.borderBottom = "1px solid #eee";
+          row.style.cursor = "pointer";
           row.title = displayText(item);
           row.textContent = displayText(item);
-          row.addEventListener('click', function () {
+          row.addEventListener("click", function () {
             var canonical = Array.isArray(item.nimi) ? item.nimi[0] : item.nimi;
-            var sel = document.getElementById(haku === 'torjuttava' ? 'torjuttavat-aineet' : 'neutraloivat-aineet');
+            var sel = document.getElementById(haku === "torjuttava" ? "torjuttavat-aineet" : "neutraloivat-aineet");
             if (!sel) return;
             // ensure option exists
-            var exists = Array.prototype.slice.call(sel.options).some(function(o){ return o.value === canonical; });
+            var exists = Array.prototype.slice.call(sel.options).some(function (o) { return o.value === canonical; });
             if (!exists) {
-              var o = document.createElement('option');
+              var o = document.createElement("option");
               o.value = canonical;
               o.text = displayText(item);
               sel.appendChild(o);
             }
             sel.value = canonical;
             // trigger change if needed
-            try { sel.dispatchEvent(new Event('change')); } catch(e){}
+            try { sel.dispatchEvent(new Event("change")); } catch (e) { }
             closeModal();
           });
           list.appendChild(row);
         });
       }
 
-      input.addEventListener('input', function (e) {
+      input.addEventListener("input", function (e) {
         renderResults(e.target.value);
       });
       // initial focus and show message
-      setTimeout(function(){ input.focus(); }, 10);
+      setTimeout(function () { input.focus(); }, 10);
       document.body.appendChild(overlay);
       // prefill if something selected to show results
-      var curVal = document.getElementById(haku === 'torjuttava' ? 'torjuttavat-aineet' : 'neutraloivat-aineet')?.value || '';
+      var curVal = document.getElementById(haku === "torjuttava" ? "torjuttavat-aineet" : "neutraloivat-aineet")?.value || "";
       if (curVal) {
         input.value = curVal;
         renderResults(curVal);
       } else {
-        list.textContent = 'Kirjoita hakusana näyttääksesi tuloksia.';
+        list.textContent = "Kirjoita hakusana näyttääksesi tuloksia.";
       }
     }
-    function updateTorjuttavaConditionalInput() {
-      var maaraYks = document.getElementById('torjuttava-maara-yksikko');
-      var pitoisuusYks = document.getElementById('torjuttava-pitoisuus-yksikko');
-      var container = document.getElementById('torjuttava-lisatieto-container');
-      var input = document.getElementById('torjuttava-tiheys');
-      if (!maaraYks || !pitoisuusYks || !container || !input) return;
-      var enabled = maaraYks.value === 'kg' && pitoisuusYks.value === 'vol';
-      container.style.display = 'block';
+    function updateTorjuttavaConditional() {
+      var aineSelect = document.getElementById("torjuttavat-aineet");
+      var input = document.getElementById("torjuttava-tiheys");
+      var tiheysContainer = document.getElementById("torjuttava-tiheys-container");
+      var ekvContainer = document.getElementById("torjuttava-ekvivalentti-container");
+      var mooliContainer = document.getElementById("torjuttava-moolimassa-container");
+
+      if (!tiheysContainer || !input) return;
+
+      var aine = (aineSelect && "value" in aineSelect) ? aineSelect.value : "";
+      var aineLower = String(aine).trim().toLowerCase();
+      var enabled = aineLower === "muu happo" || aineLower === "muu emäs";
       input.disabled = !enabled;
+
+      if (tiheysContainer)
+        tiheysContainer.style.display = enabled ? "" : "none";
+      if (mooliContainer)
+        mooliContainer.style.display = enabled ? "" : "none";
+      if (ekvContainer)
+        ekvContainer.style.display = enabled ? "" : "none";
     }
 
     function updateNeutraloivaConditional() {
-      var pitoisuusYks = document.getElementById('neutraloiva-pitoisuus-yksikko');
-      var pitoisuusInput = document.getElementById('neutraloiva-pitoisuus-arvo');
-      var container = document.getElementById('neutraloiva-lisatieto-container');
-      var input = document.getElementById('neutraloiva-tiheys');
-      if (!pitoisuusYks || !pitoisuusInput || !container || !input) return;
-      var val = parseFloat(String(pitoisuusInput.value).replace(',', '.'));
-      var enabled = pitoisuusYks.value === 'vol' && isFinite(val) && val < 100;
-      container.style.display = 'block';
+      var aineSelect = document.getElementById("neutraloivat-aineet");
+      var pitoisuusYks = document.getElementById("neutraloiva-pitoisuus-yksikko");
+      var pitoisuusInput = document.getElementById("neutraloiva-pitoisuus-arvo");
+      var input = document.getElementById("neutraloiva-tiheys");
+      var tiheysContainer = document.getElementById("neutraloiva-tiheys-container");
+      var mooliContainer = document.getElementById("neutraloiva-moolimassa-container");
+      var ekvContainer = document.getElementById("neutraloiva-ekvivalentti-container");
+      if (!pitoisuusYks || !pitoisuusInput || !tiheysContainer || !input) return;
+
+      var aine = (aineSelect && "value" in aineSelect) ? aineSelect.value : null;
+      var aineLower = aine ? aine.toLowerCase() : "";
+      var val = parseFloat(String(pitoisuusInput.value).replace(",", "."));
+      var enabled = aineLower === "muu happo" || 
+        aineLower === "muu emäs" || 
+        (pitoisuusYks.value === "vol" && val < 100) || 
+        (pitoisuusYks.value === "vol" && !val);
+
       input.disabled = !enabled;
+
+      if (tiheysContainer)
+        tiheysContainer.style.display = enabled ? "" : "none";
+
+      var muuAine = aineLower === "muu happo" || aineLower === "muu emäs";
+      if (mooliContainer)
+        mooliContainer.style.display = muuAine ? "" : "none";
+      if (ekvContainer)
+        ekvContainer.style.display = muuAine ? "" : "none";
     }
 
-    function fmt(num, digits=2) {
+    function fmt(num, digits = 1) {
       if (!isFinite(num)) return "-";
-      return new Intl.NumberFormat('fi-FI', { minimumFractionDigits: digits }).format(num);
+      return new Intl.NumberFormat("fi-FI", { maximumFractionDigits: digits }).format(num);
     }
 
     function renderResult(result) {
@@ -341,18 +450,18 @@
       html += "<div class=\"tulos-taulu\">";
 
       html += "<h4>Torjuttava aine</h4>";
-      html += "<div>Nimi: " + (t.aine || "") + "</div>";
-      html += "<div>Määrä: " + fmt(t.määrä) + " " + ((String(t.määräYks||'').toLowerCase() === 'l') ? "L" : "kg") + "</div>";
-      html += "<div>Pitoisuus: " + fmt(t.pitoisuus) + " " + (String(t.pitoisuusYks||'').toLowerCase() === 'm' ? "massa-%" : "tilavuus-%") + "</div>";
-      html += "<div>Ainemäärä: " + fmt(t.ainemäärä) + " mol</div>";
+      html += "<div>Nimi: " + (Array.isArray(t.aine) ? t.aine[0] : t.aine || "") + "</div>";
+      html += "<div>Määrä: " + fmt(t.määrä, 1) + " " + ((String(t.määräYks || "").toLowerCase() === "l") ? "L" : "kg") + "</div>";
+      html += "<div>Pitoisuus: " + fmt(t.pitoisuus, 1) + " " + (String(t.pitoisuusYks || "").toLowerCase() === "m" ? "massa-%" : "tilavuus-%") + "</div>";
+      html += "<div>Ainemäärä: " + fmt(t.ainemäärä, 1) + " mol</div>";
       html += "<br><br>";
       html += "<h4>Neutraloiva aine</h4>";
-      html += "<div>Nimi: " + n.aine + "</div>";
-      html += "<div>Ainemäärä: " + fmt(n.ainemäärä) + " mol</div>";
+      html += "<div>Nimi: " + (Array.isArray(n.aine) ? n.aine[0] : n.aine || "") + "</div>";
+      html += "<div>Ainemäärä: " + fmt(n.ainemäärä, 1) + " mol</div>";
       if (n.kokonaismassa !== null && n.kokonaismassa !== undefined)
-      html += "<div id=\"tulokset\">Massa: " + fmt(n.kokonaismassa) + " kg</div>";
+        html += "<div id=\"tulokset\">Massa: " + fmt(n.kokonaismassa, 1) + " kg</div>";
       if (n.kokonaistilavuus !== null && n.kokonaistilavuus !== undefined)
-      html += "<div id=\"tulokset\">Tilavuus: " + fmt(n.kokonaistilavuus) + " L</div>";
+        html += "<div id=\"tulokset\">Tilavuus: " + fmt(n.kokonaistilavuus, 1) + " L</div>";
 
       html += "</div>";
       html += "<p><button id=\"kopioi-tulos-btn\">Kopioi tulokset</button></p>";
@@ -360,105 +469,163 @@
     }
 
     function showResult(result) {
-      var resultEl = document.getElementById('result');
+      var resultEl = document.getElementById("result");
       if (!resultEl) return;
       resultEl.innerHTML = renderResult(result);
 
-      var kopioiBtn = document.getElementById('kopioi-tulos-btn');
+      var kopioiBtn = document.getElementById("kopioi-tulos-btn");
       if (kopioiBtn) {
-        kopioiBtn.addEventListener('click', function () {
-          var text = resultEl.textContent || resultEl.innerText || '';
+        kopioiBtn.addEventListener("click", function () {
+          var text = resultEl.textContent || resultEl.innerText || "";
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(function() {
-              alert('Tulokset kopioitu leikepöydälle.');
-            }).catch(function(err) {
-              alert('Kopiointi epäonnistui: ' + (err && err.message ? err.message : err));
+            navigator.clipboard.writeText(text).then(function () {
+              alert("Tulokset kopioitu leikepöydälle.");
+            }).catch(function (err) {
+              alert("Kopiointi epäonnistui: " + (err && err.message ? err.message : err));
             });
           } else {
             try {
-              var ta = document.createElement('textarea');
+              var ta = document.createElement("textarea");
               ta.value = text;
-              ta.style.position = 'fixed';
-              ta.style.left = '-9999px';
+              ta.style.position = "fixed";
+              ta.style.left = "-9999px";
               document.body.appendChild(ta);
               ta.select();
-              document.execCommand('copy');
+              document.execCommand("copy");
               document.body.removeChild(ta);
-              alert('Tulokset kopioitu leikepöydälle.');
+              alert("Tulokset kopioitu leikepöydälle.");
             } catch (e) {
-              alert('Kopiointi epäonnistui.');
+              alert("Kopiointi epäonnistui.");
             }
           }
         });
       }
     }
 
-    window.addEventListener("calculationDone", function(e) {
+    window.addEventListener("calculationDone", function (e) {
       if (e.detail) {
         showResult(e.detail);
       }
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener("DOMContentLoaded", function () {
       populateDatalist();
-      // refresh neutral options whenever torjuttava selection changes
-      var torjSelect = document.getElementById('torjuttavat-aineet');
-      if (torjSelect) {
-        torjSelect.addEventListener('change', function () {
+
+      function addReactiveListener(ids, handler) {
+        ids.forEach(function (id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.addEventListener("input", handler);
+          el.addEventListener("change", handler);
+        });
+      }
+
+      addReactiveListener([
+        "torjuttavat-aineet", "torjuttava-maara-arvo", "torjuttava-maara-yksikko",
+        "torjuttava-pitoisuus-arvo", "torjuttava-pitoisuus-yksikko",
+        "torjuttava-tiheys", "torjuttava-moolimassa", "torjuttava-ekvivalentti"
+      ], function () {
+        try {
           refreshNeutralOptions(getSelectedTorjTyyppi());
-        });
-      }
+        } catch (e) {}
+        try {
+          updateTorjuttavaConditional();
+        } catch (e) {}
+      });
 
-      var maaraYks = document.getElementById('torjuttava-maara-yksikko');
-      var pitoisuusYks = document.getElementById('torjuttava-pitoisuus-yksikko');
-      if (maaraYks) maaraYks.addEventListener('change', updateTorjuttavaConditionalInput);
-      if (pitoisuusYks) pitoisuusYks.addEventListener('change', updateTorjuttavaConditionalInput);
-      updateTorjuttavaConditionalInput();
+      addReactiveListener([
+        "neutraloivat-aineet", "neutraloiva-pitoisuus-arvo", "neutraloiva-pitoisuus-yksikko",
+        "neutraloiva-tiheys", "neutraloiva-moolimassa", "neutraloiva-ekvivalentti"
+      ], function () {
+        try {
+          updateNeutraloivaConditional();
+        } catch (e) {}
+      });
 
-      var neutraloivaPitoisuus = document.getElementById('neutraloiva-pitoisuus-arvo');
-      if (neutraloivaPitoisuus) {
-        neutraloivaPitoisuus.addEventListener('input', updateNeutraloivaConditional);
-        neutraloivaPitoisuus.addEventListener('change', updateNeutraloivaConditional);
-      }
+      updateTorjuttavaConditional();
       updateNeutraloivaConditional();
-
-      var tBtn = document.getElementById('torjuttava-haku-btn');
-      if (tBtn)
-        tBtn.addEventListener('click', function () {
-          openSearchPrompt('torjuttava');
-        });
-      var nBtn = document.getElementById('neutraloiva-haku-btn');
-      if (nBtn)
-        nBtn.addEventListener('click', function () {
-          openSearchPrompt('neutraloiva');
-        });
-
-      var startBtn = document.getElementById('start-btn');
-      var clearBtn = document.getElementById('clear-btn');
-
-      var logOut = document.getElementById('log-output');
-      if (startBtn) {
-        if (logOut && !logOut.__console_overridden) {
-          const origLog = console.log;
-          console.log = function (...args) {
-            try { origLog.apply(console, args); } catch(e) {}
-            try {
-              logOut.textContent += args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n';
-            } catch(e){}
-          };
-          logOut.__console_overridden = true;
-        }
-        startBtn.addEventListener('click', function () {
-          if (typeof startCalculation === 'function') startCalculation();
-          else alert('Neutralize.js ei ole ladattu tai startCalculation puuttuu.');
-        });
-      }
-      if (clearBtn) {
-        clearBtn.addEventListener('click', function(){
-          if (typeof clearForm === 'function') clearForm();
-          else alert('clearForm funktio puuttuu.');
-        });
-      }
     });
+
+    var tBtn = document.getElementById("torjuttava-haku-btn");
+    if (tBtn)
+      tBtn.addEventListener("click", function () {
+        openSearchPrompt("torjuttava");
+      });
+    var nBtn = document.getElementById("neutraloiva-haku-btn");
+    if (nBtn)
+      nBtn.addEventListener("click", function () {
+        openSearchPrompt("neutraloiva");
+      });
+
+    var startBtn = document.getElementById("start-btn");
+    var clearBtn = document.getElementById("clear-btn");
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        if (typeof clearForm === "function") clearForm();
+        else alert("clearForm funktio puuttuu.");
+      });
+    }
+
+    var logOut = document.getElementById("log-output");
+    if (startBtn) {
+      if (logOut && !logOut.__console_overridden) {
+        const origLog = console.log;
+        console.log = function (...args) {
+          try { origLog.apply(console, args); } catch (e) { }
+          try {
+            logOut.textContent += args.map(a => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ") + "\n";
+          } catch (e) { }
+        };
+        logOut.__console_overridden = true;
+      }
+    }
+
+      function debounce(fn, wait) {
+        var t;
+        return function () {
+          var args = arguments;
+          clearTimeout(t);
+          t = setTimeout(function () {
+            fn.apply(null, args);
+          }, wait || 250);
+        };
+      }
+      function hasEnoughInput() {
+        var tSel = String(document.getElementById("torjuttavat-aineet").value || "").trim();
+        var nSel = String(document.getElementById("neutraloivat-aineet").value || "").trim();
+        var nMar = parseFloat(String(document.getElementById("torjuttava-maara-arvo").value || "").replace(",", "."));
+        var nPit = parseFloat(String(document.getElementById("torjuttava-pitoisuus-arvo").value || "").replace(",", "."));
+        var neutPit = parseFloat(String(document.getElementById("neutraloiva-pitoisuus-arvo").value || "").replace(",", "."));
+        if (!tSel || !nSel) return false;
+        if (!isFinite(tMar) || !isFinite(nMar) || !isFinite(nPit)) return false;
+        return true;
+      }
+      var runAutoCalc = debounce(function () {
+        if (!hasEnoughInput()) return;
+        try {
+          startCalculation();
+        } catch (e) {
+          console.warn("Automaattinen laskenta epäonnistui:", e);
+        }
+      }, 250);
+
+      var autoFields = [
+        "torjuttavat-aineet", "neutraloivat-aineet",
+        "torjuttava-maara-arvo", "torjuttava-maara-yksikko",
+        "torjuttava-pitoisuus-arvo", "torjuttava-pitoisuus-yksikko",
+        "neutraloiva-pitoisuus-arvo", "neutraloiva-pitoisuus-yksikko",
+      ];
+      autoFields.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        var ev = el.tagName.toLowerCase() === "select" || el.type === "number" ? "change" : "input";
+        el.addEventListener(ev, function () {
+          try {updateTorjuttavaConditional();} catch (e) {}
+          try {updateNeutraloivaConditional();} catch (e) {}
+          runAutoCalc();
+        });
+      });
   </script>
- </html>
+
+</html>
