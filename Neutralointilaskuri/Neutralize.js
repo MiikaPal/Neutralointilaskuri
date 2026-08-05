@@ -1,7 +1,10 @@
 const aineet = [
-  {tyyppi: "happo", nimi: ["Suolahappo", "Kloorivetyhappo", "Vetykloridihappo"], 
+  {tyyppi: "happo", 
+    nimi: ["Suolahappo", "Kloorivetyhappo", "Vetykloridihappo"], 
     YK: ["1050", "1789", "2186"], CAS: ["7647-37-2", "22353-15-1"],
-    kaava: ["HCl", "ClH"], Ekv: 1, M: 36.46, k: -22.4,
+    kaava: ["HCl", "ClH"], 
+    Ekv: 1, M: 36.46, k: -22.4,
+    kp: 64.2, kh: 40,
     tiheys: function (pitoisuus) {
       return (
         0.99847 + 
@@ -10,11 +13,13 @@ const aineet = [
         2.8726 * Math.pow(10, -7) * Math.pow(pitoisuus, 3)
       );
     },
-    p: 1,
   },
-  {tyyppi: "happo", nimi: ["Vetyfluoridi", "Fluorivetyhappo"], 
+  {tyyppi: "happo", 
+    nimi: ["Vetyfluoridi", "Fluorivetyhappo"], 
     YK: ["1052", "1790"], CAS: ["7664-39-3", "12381-92-9"],
-    kaava: "HF", Ekv: 1, M: 20.01, k: 12.76,
+    kaava: "HF", 
+    Ekv: 1, M: 20.01, k: 12.76,
+    kh: 70,
     tiheys: function (pitoisuus) {
       return (
         0.99347 + 
@@ -25,9 +30,11 @@ const aineet = [
       );
     },
   },
-  {tyyppi: "happo", nimi: ["Typpihappo", "Salpietarihappo", "Sievesi"], 
+  {tyyppi: "happo", 
+    nimi: ["Typpihappo", "Salpietarihappo", "Sievesi"], 
     YK: ["2031", "2032"], CAS: ["7697-37-2", "78989-43-2"],
-    kaava: "HNO3", Ekv: 1, M: 63.01, k: 7.68,
+    kaava: "HNO3", 
+    Ekv: 1, M: 63.01, k: 7.68,
     tiheys: function (pitoisuus) {
       if (pitoisuus <= 78.5) {
         return (
@@ -48,38 +55,91 @@ const aineet = [
       }
     },
   },
-  {tyyppi: "happo", nimi: ["Rikkihappo", "Vihtrilliöljy"], 
+  {tyyppi: "happo", 
+    nimi: ["Rikkihappo", "Vihtrilliöljy"], 
     YK: ["1830", "1832", "2796"], CAS: ["7664-93-9", "12772-98-4"],
-    kaava: ["H2SO4", "H2O4S"], Ekv: 2, M: 98.08, k: 7.68,
+    kaava: ["H2SO4", "H2O4S"], 
+    Ekv: 2, M: 98.08, k: 7.68,
     tiheys: function (pitoisuus) {
       return (
         1.0012 + 
         0.0051875 * pitoisuus +
         1.5943 * Math.pow(10, -4) * Math.pow(pitoisuus, 2) -
-        3.6871 * Math.pow(10, -6) * Math.pow(pitoisuus, 3) +
+        4.8955 * Math.pow(10, -6) * Math.pow(pitoisuus, 3) +
         7.4832 * Math.pow(10, -8) * Math.pow(pitoisuus, 4) -
         3.8716 * Math.pow(10, -10) * Math.pow(pitoisuus, 5)
       );
     },
   },
-  {tyyppi: "happo", nimi: ["Bromivety", "Vetybromidi", "Bromivetyhappo"], 
+  {tyyppi: "happo", 
+    nimi: ["Bromivety", "Vetybromidi", "Bromivetyhappo"], 
     YK: ["1048", "1788"], CAS: ["10035-10-6", "10097-32-2"],
-    kaava: ["HBr", "BrH"], Ekv: 1, M: 80.91, k: -18,
+    kaava: ["HBr", "BrH"], 
+    Ekv: 1, M: 80.91, k: -18,
+    kp: 65.9,
     tiheys: function (pitoisuus) {
       return (
-        0.99818 + 0.0070426 * pitoisuus + 
+        0.99818 + 
+        0.0070426 * pitoisuus + 
         2.881 * Math.pow(10, -5) * Math.pow(pitoisuus, 2) + 
         9.9023 * Math.pow(10, -7) * Math.pow(pitoisuus, 3) - 
         4.7722 * Math.pow(10, -9) * Math.pow(pitoisuus, 4)
       );
     },
   },
- // {tyyppi: "happo", nimi: ["Etikkahappo", "Karbokysyylihappo"], YK: ["2789", "2790"], kaava: "CH3COOH", Ekv: 1, M: 60.05,},
- // {tyyppi: "happo", nimi: ["Muurahaishappo", "Metaanihappo"], YK: ["1799", "3412"], kaava: "HCOOH", Ekv: 1, M: 46.03,},
- // {tyyppi: "happo", nimi: ["Perkloorihappo"], YK: ["1802", "1873"], kaava: "HClO4", Ekv: 1, M: 100.46,},
-  {tyyppi: "happo", nimi: ["Dikloorietikkahappo", "Bikloorietikkahappo", "Dikloorietaanihappo", "2,2-Dikloorietikkahappo", "DCA"], 
+  {tyyppi: "happo", 
+    nimi: ["Etikkahappo", "Karbokysyylihappo", "Etaanihappo", "Jääetikka", "Metaanikarboksyylihappo"], 
+    YK: ["2789", "2790"], CAS: ["64-19-7", "68475-71-8"],
+    kaava: ["CH3COOH", "C2H4O2"], 
+    Ekv: 1, M: 60.05, k: 19.04,
+    tiheys: function (pitoisuus) {
+      return (
+        0.99857 + 
+        0.0012903 * pitoisuus + 
+        1.5259 * Math.pow(10, -5) * Math.pow(pitoisuus, 2) - 
+        6.8805 * Math.pow(10, -7) * Math.pow(pitoisuus, 3) + 
+        8.8776 * Math.pow(10, -9) * Math.pow(pitoisuus, 4) - 
+        4.2908 * Math.pow(10, -11) * Math.pow(pitoisuus, 5)
+      );
+    },
+  },
+  {tyyppi: "happo", 
+    nimi: ["Muurahaishappo", "Vetykarbonaattihappo", "Metaanihappo", "Formyylihappo"], 
+    YK: ["1799", "3412"], CAS: ["64-18-6", "2564-86-5"],
+    kaava: ["HCOOH", "CH2O2"], 
+    Ekv: 1, M: 46.025, k: 15,
+    tiheys: function (pitoisuus) {
+      return (
+        0.99873 + 
+        0.0026988 * pitoisuus - 
+        1.4463 * Math.pow(10, -5) * Math.pow(pitoisuus, 2) + 
+        3.1436 * Math.pow(10, -7) * Math.pow(pitoisuus, 3) - 
+        3.1829 * Math.pow(10, -9) * Math.pow(pitoisuus, 4) + 
+        1.0152 * Math.pow(10, -11) * Math.pow(pitoisuus, 5)
+      );
+    },
+  },
+  {tyyppi: "happo", 
+    nimi: ["Perkloorihappo"], 
+    YK: ["1802", "1873"], CAS: ["7601-90-3"],
+    kaava: "HClO4", 
+    Ekv: 1, M: 100.46, k: -15.2,
+    kh: 70,
+    tiheys: function (pitoisuus) {
+      return (
+        0.99818 + 
+        0.0068429 * pitoisuus - 
+        6.6375 * Math.pow(10, -5) * Math.pow(pitoisuus, 2) + 
+        2.6291 * Math.pow(10, -6) * Math.pow(pitoisuus, 3) - 
+        1.602 * Math.pow(10, -8) * Math.pow(pitoisuus, 4)
+      );
+    },
+  },
+  {tyyppi: "happo", 
+    nimi: ["Dikloorietikkahappo", "Bikloorietikkahappo", "Dikloorietaanihappo", "2,2-Dikloorietikkahappo", "DCA"], 
     YK: "1764", CAS: "79-43-6", 
-    kaava: "CHCl2COOH", Ekv: 1, M: 128.94, k: 2.52,
+    kaava: ["CHCl2COOH", "C2H2CL2O2", "CHCl2CO2H"], 
+    Ekv: 1, M: 128.94, k: 2.52,
     tiheys: function (pitoisuus) {
       return (
         0.9982 + 
@@ -89,9 +149,11 @@ const aineet = [
       );
     },
   },
-  {tyyppi: "happo", nimi: ["Fosforihappo", "Trivetyfosfaatti", "Ortofosforihappo", "Trihydroksididooksididofosfori"], 
+  {tyyppi: "happo", 
+    nimi: ["Fosforihappo", "Trivetyfosfaatti", "Ortofosforihappo", "Trihydroksididooksididofosfori"], 
     YK: ["1805", "3453"],  CAS: ["7664-38-2", "14265-44-2"],
-    kaava: ["H3PO4", "H3O4P"], Ekv: 3, M: 97.995, k: 8.4,
+    kaava: ["H3PO4", "H3O4P"], 
+    Ekv: 3, M: 97.995, k: 8.4,
     tiheys: function (pitoisuus) {
       return (
         0.99839 + 
@@ -102,10 +164,29 @@ const aineet = [
       );
     },
   },
+  {tyyppi: "happo",
+    nimi: ["Vetyjodidi", "Jodivetyhappo", "Jodivety"],
+    YK: ["1787", "2197"], CAS: ["10034-85-2", "17144-19-3"],
+    kaava: "HI",
+    Ekv: 1, M: 127.912, k: -19,
+    kp: 70,
+    tiheys: function (pitoisuus) {
+      return (
+        0.99809 +
+         0.0073071 * pitoisuus + 
+        2.2531 * Math.pow(10, -5) * Math.pow(pitoisuus, 2) + 
+        1.7393 * Math.pow(10, -6) * Math.pow(pitoisuus, 3) - 
+        1.3553 * Math.pow(10, -8) * Math.pow(pitoisuus, 4)
+      );
+    },
+  },
   {tyyppi: "happo", nimi: "Muu happo", Ekv: undefined, M: undefined, tiheys: undefined,},
-  {tyyppi: "emäs", nimi: ["Natriumhydroksidi", "Lipeä", "Natriumlipeä"], 
+  {tyyppi: "emäs", 
+    nimi: ["Natriumhydroksidi", "Lipeä", "Natriumlipeä"], 
     YK: ["1823", "1824"], CAS: ["1310-73-2", "81133-20-2"],
-    kaava: "NaOH", Ekv: 1, M: 39.998, k: 3.7,
+    kaava: "NaOH", 
+    Ekv: 1, M: 39.998, k: 3.7,
+    kp: 52.2,
     tiheys: function (pitoisuus) {
       return (
         0.99506 + 
@@ -115,13 +196,36 @@ const aineet = [
       );
     },
   },
-  {tyyppi: "emäs", nimi: ["Kalsiumhydroksidi", "Kalsiumvesi", "Kalkkimaito", "Kalsiumdihydroksidi", "Sammutettu kalkki"],
-    kaava: "Ca(OH)2", Ekv: 2, M: 74.09,
+  {tyyppi: "happo", 
+    nimi: ["Fluoripiihappo", "Heksafluropiihappo", "Divetyheksafluorisilikaatti", "Hydropiifluorihappo"],
+    YK: "1778", CAS: "16961-83-4",
+    kaava: ["H2SiF6", "F6H2Si"], 
+    Ekv: 2, M: 144.091, k: 3.2,
+    tiheys: function (pitoisuus) {
+      return (
+        0.99883 + 
+        0.0082904 * pitoisuus + 
+        7.2434 * Math.pow(10, -6) * Math.pow(pitoisuus, 2) + 
+        1.2052 * Math.pow(10, -6) * Math.pow(pitoisuus, 3) - 
+        1.5239 * Math.pow(10, -8) * Math.pow(pitoisuus, 4)
+      );
+    },
   },
-  {tyyppi: "emäs", nimi: ["Kaliumhydroksidi", "Kaliumlipeä"], 
+  {tyyppi: "emäs", 
+    nimi: ["Kalsiumhydroksidi", "Kalsiumvesi", "Kalkkimaito", "Kalsiumdihydroksidi", "Sammutettu kalkki"],
+    CAS: ["1305-62-0", "7719-01-9"],
+    kaava: ["Ca(OH)2", "CaH2O2"], 
+    Ekv: 2, M: 74.09, k: -1.7,
+    kp: 0.16,
+    tiheys: 2.24,
+  },
+  {tyyppi: "emäs", 
+    nimi: ["Kaliumhydroksidi", "Kaliumlipeä", "Kaustinen potaska"],
     YK: ["1813", "1814"], CAS: "1310-58-3",
-    kaava: "KOH", Ekv: 1, M: 56.11, k: -2.8,
-     tiheys: function (pitoisuus) {
+    kaava: "KOH", 
+    Ekv: 1, M: 56.11, k: -2.8,
+    kp: 52.8,
+    tiheys: function (pitoisuus) {
       return (
         0.99785 + 
         0.0091366 * pitoisuus +
@@ -131,7 +235,14 @@ const aineet = [
       );
     },
   },
-  // {tyyppi: "emäs", nimi: "Kalsiumkarbonaatti", kaava: "CaCO3", Ekv: 2, M: 100.09, tiheys: 2.71,},
+  {tyyppi: "emäs", 
+    nimi: ["Kalsiumkarbonaatti", "Polttamaton kalkki"],
+    CAS: ["471-34-1", "13397-26-7"], 
+    kaava: ["CaCO3", "CCaO3"], 
+    Ekv: 2, M: 100.09, k: -1.7,
+    kp: 0.0001,
+    tiheys: 2.8,
+  },
   {tyyppi: "emäs", nimi: "Muu emäs", Ekv: undefined, M: undefined, tiheys: undefined,
   },
 ];
@@ -166,23 +277,28 @@ function fmt(num, digits = 8) {
 }
 
 function laskeTiheys(obj, pitoisuus, kokonaisTiheys) {
-  if (typeof obj.tiheys === "function") return obj.tiheys(pitoisuus);
-  if (obj.tiheys === undefined) {
+  if (obj.tiheys !== undefined) {
+    if (typeof obj.tiheys === "function") return obj.tiheys(pitoisuus);
+    else return obj.tiheys;
+  }
+  else {
     tiheys = parseNumber(kokonaisTiheys);
     if (kokonaisTiheys === undefined) {
       tiheys = parseNumber(
         window.prompt("Anna mukautetun liuoksen tiheys (kg/L):")
       );
+      if (!isFinite(tiheys)) {
+        alert("Aineen tiheyttä ei ole määritetty oikein.");
+        throw new Error("Aineen tiheyttä ei ole määritetty oikein.");
+      }
     }
-  if (!isFinite(tiheys)) {
-    alert("Aineen tiheyttä ei ole määritetty oikein.");
-    throw new Error("Aineen tiheyttä ei ole määritetty oikein.");
-  }}
+  }
   return tiheys;
 }
 
 function laskePuhdasTiheys(obj, pitoisuus, kokonaisTiheys) {
   if (typeof obj.tiheys === "function") return obj.tiheys(100);
+  if (typeof obj.tiheys === "number") return obj.tiheys;
   if (obj.tiheys === undefined) {
     tiheys = parseNumber(kokonaisTiheys);
     if (kokonaisTiheys === undefined) {
@@ -194,12 +310,14 @@ function laskePuhdasTiheys(obj, pitoisuus, kokonaisTiheys) {
       tiheys = parseNumber(
         window.prompt("Anna mukautetun aineen puhdas tiheys (kg/L):")
       );
-  if (!isFinite(tiheys)) {
-    alert("Aineen tiheyttä ei ole määritetty oikein.");
-    throw new Error("Aineen tiheyttä ei ole määritetty oikein.");
-  }}
+      if (!isFinite(tiheys)) {
+        alert("Aineen tiheyttä ei ole määritetty oikein.");
+        throw new Error("Aineen tiheyttä ei ole määritetty oikein.");
+      }
+    }
+  }
   return tiheys;
-  }}
+}
 
 function arvioiTiheys(pitoisuus, aineTiheys) {
   const vesiPitoisuus = 100 - pitoisuus;
@@ -583,11 +701,14 @@ function startCalculation() {
       torjuttava: {
         input: tAine,
         aine: tObj.nimi,
-        määrä: tMArv,
-        määräYks: tMYks,
         pitoisuus: tPArv,
         pitoisuusYks: tPYks,
         ainemäärä: tAM,
+        moolimassa: tMol,
+        ekvivalentti: tEkv,
+        tiheys: tKokT || tTih,
+        määrä: tMArv,
+        määräYks: tMYks,
       },
       neutraloiva: {
         input: nAine,
@@ -595,6 +716,9 @@ function startCalculation() {
         pitoisuus: nPArv,
         pitoisuusYks: nPYks,
         ainemäärä: nAM,
+        moolimassa: nMol,
+        ekvivalentti: nEkv,
+        tiheys: nKokT || nTih,
         puhdasmassa: typeof nMas !== "undefined" ? nMas : null,
         kokonaistilavuus: typeof nKokV !== "undefined" ? nKokV : null,
         kokonaismassa: typeof nKokM !== "undefined" ? nKokM : null,

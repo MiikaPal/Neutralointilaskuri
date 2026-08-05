@@ -110,6 +110,9 @@
               <div id="result"></div>
             </div>
         </div>
+        <div id="ainetaulukko" class="panel-body">
+          <h3 id="taulukko-heading">Ainetaulukko</h3>
+      </div>
     </app-neutralointilaskuri>
   </div>
   <script src="Neutralize.js"></script>
@@ -203,7 +206,13 @@
       placeholder.text = "-- Valitse --";
       torjSelect.appendChild(placeholder);
 
-      aineet.forEach(function (item) {
+      var sortedAineet = (Array.isArray(aineet) ? aineet.slice() : []).sort(function (a, b) {
+        var ka = (a && typeof a.k === "number") ? a.k : Infinity;
+        var kb = (b && typeof b.k === "number") ? b.k : Infinity;
+        return ka-kb;
+      });
+
+      sortedAineet.forEach(function (item) {
         var name = Array.isArray(item.nimi) ? item.nimi[0] : item.nimi || "";
         var full = displayText(item);
         if (torjList) {
@@ -439,7 +448,7 @@
 
     function fmt(num, digits = 1) {
       if (!isFinite(num)) return "-";
-      return new Intl.NumberFormat("fi-FI", { maximumFractionDigits: digits }).format(num);
+      return new Intl.NumberFormat("fi-FI", { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(num);
     }
 
     function renderResult(result) {
@@ -449,19 +458,31 @@
       var html = "";
       html += "<div class=\"tulos-taulu\">";
 
+      html += "<div class=\"output-container\">"
       html += "<h4>Torjuttava aine</h4>";
       html += "<div>Nimi: " + (Array.isArray(t.aine) ? t.aine[0] : t.aine || "") + "</div>";
-      html += "<div>Määrä: " + fmt(t.määrä, 1) + " " + ((String(t.määräYks || "").toLowerCase() === "l") ? "L" : "kg") + "</div>";
-      html += "<div>Pitoisuus: " + fmt(t.pitoisuus, 1) + " " + (String(t.pitoisuusYks || "").toLowerCase() === "m" ? "massa-%" : "tilavuus-%") + "</div>";
-      html += "<div>Ainemäärä: " + fmt(t.ainemäärä, 1) + " mol</div>";
-      html += "<br><br>";
+      html += "<div>Määrä: " + fmt(t.määrä, 2) + " " + ((String(t.määräYks || "").toLowerCase() === "l") ? "L" : "kg") + "</div>";
+      html += "<div>Pitoisuus: " + fmt(t.pitoisuus) + " " + (String(t.pitoisuusYks || "").toLowerCase() === "m" ? "massa-%" : "tilavuus-%") + "</div>";
+      html += "<div>Tiheys: " + (isFinite(t.tiheys) ? fmt(t.tiheys, 3) + " kg/L" : "-") + "</div>";
+      html += "<div>Moolimassa: " + (isFinite(t.moolimassa) ? fmt(t.moolimassa, 2) + " g/mol" : "-") + "</div>";
+      html += "<div>Ainemäärä: " + fmt(t.ainemäärä, 2) + " mol</div>";
+      html += "<div>Ekvivalentti: " + (isFinite(t.ekvivalentti) ? fmt(t.ekvivalentti, 0) : "-") + "</div>";
+      html += "</div>";
+      html += "<div class=\"output-container\">";
       html += "<h4>Neutraloiva aine</h4>";
       html += "<div>Nimi: " + (Array.isArray(n.aine) ? n.aine[0] : n.aine || "") + "</div>";
-      html += "<div>Ainemäärä: " + fmt(n.ainemäärä, 1) + " mol</div>";
+      html += "<div>Ekvivalentti: " + (isFinite(n.ekvivalentti) ? fmt(n.ekvivalentti, 0) : "-") + "</div>";
+      html += "<div>Ainemäärä: " + fmt(n.ainemäärä, 2) + " mol</div>";
+      html += "<div>Moolimassa: " + (isFinite(n.moolimassa) ? fmt(n.moolimassa, 2) + " g/mol" : "-") + "</div>";
+      if (n.puhdasmassa !== null && n.puhdasmassa !== undefined)
+        html += "<div>Puhdas massa: " + fmt(n.puhdasmassa, 2) + " kg</div>";
+      html += "<div>Pitoisuus: " + fmt(n.pitoisuus) + " " + (String(n.pitoisuusYks || "").toLowerCase() === "m" ? "massa-%" : "tilavuus-%") + "</div>";
+      html += "<div>Tiheys: " + (isFinite(n.tiheys) ? fmt(n.tiheys, 3) + " kg/L" : "-") + "</div>";
       if (n.kokonaismassa !== null && n.kokonaismassa !== undefined)
-        html += "<div id=\"tulokset\">Massa: " + fmt(n.kokonaismassa, 1) + " kg</div>";
+        html += "<div id=\"tulokset\">Massa: " + fmt(n.kokonaismassa, 2) + " kg</div>";
       if (n.kokonaistilavuus !== null && n.kokonaistilavuus !== undefined)
-        html += "<div id=\"tulokset\">Tilavuus: " + fmt(n.kokonaistilavuus, 1) + " L</div>";
+        html += "<div id=\"tulokset\">Tilavuus: " + fmt(n.kokonaistilavuus, 2) + " L</div>";
+      html += "</div>";
 
       html += "</div>";
       html += "<p><button id=\"kopioi-tulos-btn\">Kopioi tulokset</button></p>";
@@ -476,7 +497,9 @@
       var kopioiBtn = document.getElementById("kopioi-tulos-btn");
       if (kopioiBtn) {
         kopioiBtn.addEventListener("click", function () {
-          var text = resultEl.textContent || resultEl.innerText || "";
+          var contentEl = resultEl.querySelector('.tulos-taulu');
+          var text = contentEl ? (contentEl.innerText || contentEl.textContent) : (resultEl.innerText || resultEl.textContent || "");
+          text = text.replace(/<br\s*\/?\>/gi, '\n');
           if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function () {
               alert("Tulokset kopioitu leikepöydälle.");
@@ -594,11 +617,11 @@
       function hasEnoughInput() {
         var tSel = String(document.getElementById("torjuttavat-aineet").value || "").trim();
         var nSel = String(document.getElementById("neutraloivat-aineet").value || "").trim();
-        var nMar = parseFloat(String(document.getElementById("torjuttava-maara-arvo").value || "").replace(",", "."));
-        var nPit = parseFloat(String(document.getElementById("torjuttava-pitoisuus-arvo").value || "").replace(",", "."));
-        var neutPit = parseFloat(String(document.getElementById("neutraloiva-pitoisuus-arvo").value || "").replace(",", "."));
+        var tMar = parseFloat(String(document.getElementById("torjuttava-maara-arvo").value || "").replace(",", "."));
+        var tPit = parseFloat(String(document.getElementById("torjuttava-pitoisuus-arvo").value || "").replace(",", "."));
+        var nPit = parseFloat(String(document.getElementById("neutraloiva-pitoisuus-arvo").value || "").replace(",", "."));
         if (!tSel || !nSel) return false;
-        if (!isFinite(tMar) || !isFinite(nMar) || !isFinite(nPit)) return false;
+        if (!isFinite(tMar) || !isFinite(tPit) || !isFinite(nPit)) return false;
         return true;
       }
       var runAutoCalc = debounce(function () {
